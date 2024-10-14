@@ -1,0 +1,14 @@
+{% comment %} # templates/accounts/registration_success.html
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Registration Successful</h2>
+  <p>Thank you for registering. We've sent a verification email to your Gmail address. Please check your inbox and click on the verification link to activate your account.</p>
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %} {% endcomment %}

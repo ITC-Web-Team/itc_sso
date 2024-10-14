@@ -1,0 +1,12 @@
+# email_verification.html
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if success %}
+    <h2>Email Verified</h2>
+    <p>Your email has been successfully verified. You can now log in to your account.</p>
+  {% else %}
+    <h2>Verification Failed</h2>
+    <p>The verification link is invalid or has expired. Please try registering again.</p>
+  {% endif %}
+{% endblock %}
