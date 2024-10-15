@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSO Service Documentation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Single Sign-On (SSO) Service Documentation</h1>
+    <p>Welcome to the documentation for our SSO service. This guide will help developers integrate and use our SSO service in their applications.</p>
+
+    <h2>Table of Contents</h2>
+    <ul>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#api-endpoints">API Endpoints</a></li>
+        <li><a href="#authentication-flow">Authentication Flow</a></li>
+        <li><a href="#error-handling">Error Handling</a></li>
+        <li><a href="#example-usage">Example Usage</a></li>
+        <li><a href="#faq">FAQ</a></li>
+    </ul>
+
+    <h2 id="getting-started">Getting Started</h2>
+    <p>To use our SSO service, you need to follow these steps:</p>
+    <ol>
+        <li>Register your application in the SSO service portal.</li>
+        <li>Obtain your API credentials (Client ID and Client Secret).</li>
+        <li>Integrate the SSO service using the provided API endpoints.</li>
+    </ol>
+
+    <h2 id="api-endpoints">API Endpoints</h2>
+    <p>Here are the primary API endpoints available:</p>
+    <ul>
+        <li><strong>POST /api/register/</strong>: Register a new user.</li>
+        <li><strong>POST /api/login/</strong>: Authenticate a user.</li>
+        <li><strong>POST /api/verify-email/</strong>: Verify user email.</li>
+        <li><strong>POST /api/reset-password/</strong>: Request a password reset.</li>
+    </ul>
+
+    <h3>Example API Request</h3>
+    <pre><code>POST /api/login/
+Content-Type: application/json
+
+{
+    "username": "roll_number",
+    "password": "user_password"
+}</code></pre>
+
+    <h2 id="authentication-flow">Authentication Flow</h2>
+    <p>The authentication flow consists of the following steps:</p>
+    <ol>
+        <li>User submits their roll number and password.</li>
+        <li>The system verifies the credentials.</li>
+        <li>If valid, a session token is generated and returned to the user.</li>
+        <li>The user can then use this token for subsequent requests to protected endpoints.</li>
+    </ol>
+
+    <h2 id="error-handling">Error Handling</h2>
+    <p>When interacting with the SSO service, you may encounter various error responses. Here are common HTTP status codes:</p>
+    <ul>
+        <li><strong>400 Bad Request</strong>: The request was invalid.</li>
+        <li><strong>401 Unauthorized</strong>: Authentication failed.</li>
+        <li><strong>403 Forbidden</strong>: Access to the resource is forbidden.</li>
+        <li><strong>404 Not Found</strong>: The requested resource was not found.</li>
+        <li><strong>500 Internal Server Error</strong>: An error occurred on the server.</li>
+    </ul>
+
+    <h2 id="example-usage">Example Usage</h2>
+    <p>Below is an example of how to use the SSO service in a Python application using the `requests` library:</p>
+    <pre><code>import requests
+
+# Login to SSO
+url = 'https://your-sso-service/api/login/'
+data = {
+    'username': 'your_roll_number',
+    'password': 'your_password'
+}
+
+response = requests.post(url, json=data)
+
+if response.status_code == 200:
+    token = response.json().get('token')
+    print(f'Logged in successfully. Token: {token}')
+else:
+    print(f'Error: {response.status_code} - {response.json().get("detail")}')
+</code></pre>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>How can I reset my password?</h3>
+    <p>You can request a password reset by calling the <strong>POST /api/reset-password/</strong> endpoint with your registered email.</p>
+
+    <h3>What should I do if I encounter an error?</h3>
+    <p>Refer to the error codes section above. If the problem persists, please contact support.</p>
+
+    <h3>Can I use this service for multiple applications?</h3>
+    <p>Yes, you can register multiple applications and obtain separate API credentials for each.</p>
+
+    <footer>
+        <hr>
+        <p>&copy; 2024 SSO Service. All rights reserved.</p>
+    </footer>
+</div>
+
+</body>
+</html>

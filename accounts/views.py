@@ -79,3 +79,6 @@ class CustomPasswordResetView(PasswordResetView):
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'password_reset_done.html'
+
+def documentation(request):
+    return render(request, 'documentation.html')
