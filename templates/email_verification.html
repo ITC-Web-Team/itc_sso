@@ -1,12 +1,18 @@
-# email_verification.html
 {% extends 'base.html' %}
 
+{% block title %}Email Confirmed{% endblock %}
+
+{% block header %}Email Verification Status{% endblock %}
+
 {% block content %}
-  {% if success %}
-    <h2>Email Verified</h2>
-    <p>Your email has been successfully verified. You can now log in to your account.</p>
-  {% else %}
-    <h2>Verification Failed</h2>
-    <p>The verification link is invalid or has expired. Please try registering again.</p>
-  {% endif %}
+<div class="text-center">
+    {% if error %}
+        <p class="lead text-danger">{{ error }}</p>
+    {% else %}
+        <p class="lead text-success">Your email has been successfully verified!</p>
+    {% endif %}
+    <div class="mt-4">
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    </div>
+</div>
 {% endblock %}

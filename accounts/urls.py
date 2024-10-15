@@ -1,10 +1,13 @@
-# urls.py (in accounts app)
 from django.urls import path
-from . import views
+from .views import home, register, email_sent, confirm_email, user_login, edit_profile, CustomPasswordResetView, CustomPasswordResetDoneView
 
 urlpatterns = [
-    path('register/', views.register, name='register'),
-    path('verify-email/<str:token>/', views.verify_email, name='verify_email'),
-    # path('registration-success/', views.registration_success, name='registration_success'),
+    path('', home, name='home'),
+    path('register/', register, name='register'),
+    path('email-sent/', email_sent, name='email_sent'),
+    path('confirm-email/<str:token>/', confirm_email, name='confirm_email'),
+    path('login/', user_login, name='login'),
+    path('edit-profile/', edit_profile, name='edit_profile'),
+    path('reset-password/', CustomPasswordResetView.as_view(), name='reset_password'),
+    path('password-reset-done/', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
 ]
-

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Confirmed{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body text-center">
+        {% if error %}
+            <h2 class="card-title mb-4">Verification Failed</h2>
+            <p>{{ error }}</p>
+        {% else %}
+            <h2 class="card-title mb-4">Email Confirmed</h2>
+            <p>Your email has been successfully verified. You can now log in to your account.</p>
+        {% endif %}
+        <a href="{% url 'login' %}" class="btn btn-primary mt-3">Login</a>
+    </div>
+</div>
+{% endblock %}

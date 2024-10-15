@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block header %}Welcome to SSO{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <p class="lead">Manage your single sign-on experience here.</p>
+    <div class="mt-4">
+        <a href="{% url 'login' %}" class="btn btn-primary me-2">Login</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
+    </div>
+</div>
+{% endblock %}

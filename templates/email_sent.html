@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Email Sent{% endblock %}
+
+{% block header %}Verification Email Sent{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <p class="lead">A verification email has been sent to your registered email address. Please check your inbox and follow the instructions to complete your registration.</p>
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
