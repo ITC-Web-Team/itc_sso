@@ -10,7 +10,7 @@ class RegistrationForm(UserCreationForm):
     branch = forms.CharField(max_length=100)
     passing_year = forms.IntegerField()
     course = forms.CharField(max_length=100)
-    
+
     class Meta:
         model = User
         fields = ('name', 'roll', 'password1', 'password2', 'branch', 'passing_year', 'course')
@@ -43,3 +43,4 @@ class EditProfileForm(forms.ModelForm):
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Roll Number')
+     
