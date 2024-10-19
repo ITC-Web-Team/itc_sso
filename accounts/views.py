@@ -1,11 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView
 from django.contrib import messages
-from .models import Profile
+from .models import *
 from .forms import RegistrationForm, LoginForm, EditProfileForm
 from .utils import send_verification_email
+from rest_framework import generics
+from .serializers import *
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import JsonResponse
+
 
 def home(request):
     if Profile.objects.filter(user=request.user).exists():
@@ -58,6 +65,7 @@ def user_login(request):
                 messages.error(request, 'Invalid roll number or password')
     else:
         form = LoginForm()
+
     return render(request, 'login.html', {'form': form})
 
 
@@ -82,3 +90,47 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 
 def documentation(request):
     return render(request, 'documentation.html')
+
+def project_ssocall(request, id):
+    project = Projects.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():  # Check if the form is valid
+            roll = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+
+            user = authenticate(request, username=roll, password=password)
+
+            if user is not None:
+                if Profile.objects.get(user=user).email_verified:  # Check if email is verified
+                    login(request, user)
+                    projecturl = project.redirect_url
+                    session = LoginSession.objects.create(user=user, project=project)
+                    return redirect(f"{projecturl}?accessid={session.id}")
+                else:
+                    messages.error(request, 'Please verify your email to login')
+            else:
+                messages.error(request, 'Invalid roll number or password, are you registered?')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+
+    else:
+        form = LoginForm()
+
+    return render(request, 'ssocall.html', {'form': form, 'proid': project.id})
+
+
+@api_view(['POST'])
+def return_user_data(request):
+    session_id = request.data.get('id')
+    try:
+        session = LoginSession.objects.get(id=session_id)
+    except LoginSession.DoesNotExist:
+        return JsonResponse({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    person = Profile.objects.get(user=session.user)
+
+    return JsonResponse({
+        "name" : person.name
+    }, status=200)

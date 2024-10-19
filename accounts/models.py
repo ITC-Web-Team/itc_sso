@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -12,4 +13,20 @@ class Profile(models.Model):
     verification_token = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        return self.roll
+    
+
+class Projects(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100)
+    redirect_url = models.URLField()
+
+    def __str__(self):
+        return self.name
+
+class LoginSession(models.Model):
+    id = models.UUIDField(primary_key=True , default=uuid.uuid4)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    project = models.OneToOneField(Projects, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+

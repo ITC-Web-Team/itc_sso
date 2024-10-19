@@ -8,7 +8,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import *
 
 class ProfileInline(admin.StackedInline):
     model = Profile
@@ -35,3 +35,12 @@ admin.site.register(User, UserAdmin)
 
 # Register the Profile model with custom admin
 admin.site.register(Profile, ProfileAdmin)
+
+admin.site.register(LoginSession)
+# admin.site.unregister(Projects)
+
+
+class ProjectsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'redirect_url')  # Add the 'id' to the list display
+
+admin.site.register(Projects, ProjectsAdmin)

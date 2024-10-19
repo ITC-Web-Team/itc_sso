@@ -9,6 +9,6 @@ def send_verification_email(user):
 
     verification_link = reverse('confirm_email', args=[token])
     subject = 'Email Verification'
-    message = f'Click the link to verify your email: https://localhost:8000{verification_link}'
+    message = f'Click the link to verify your email: http://localhost:8000{verification_link}'
 
     send_mail(subject, message, 'from@example.com', [user.username + '@iitb.ac.in'])

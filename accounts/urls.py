@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, register, email_sent, confirm_email, user_login, edit_profile, CustomPasswordResetView, CustomPasswordResetDoneView, documentation
+from .views import *
 
 urlpatterns = [
     path('', home, name='home'),
@@ -11,4 +11,9 @@ urlpatterns = [
     path('reset-password/', CustomPasswordResetView.as_view(), name='reset_password'),
     path('password-reset-done/', CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
     path('docs/', documentation, name='docs'),
+
+
+    path('project/login/<str:id>', project_ssocall, name='ssocall'),
+    path('project/getuserdata', return_user_data, name='return_user_data')
+    
 ]
