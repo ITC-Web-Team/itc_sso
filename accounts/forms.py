@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate
 
 class RegistrationForm(UserCreationForm):
     roll = forms.CharField(max_length=10)
@@ -41,6 +42,6 @@ class EditProfileForm(forms.ModelForm):
         model = Profile
         fields = ('name', 'branch', 'passing_year', 'course')
 
+
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Roll Number')
-     

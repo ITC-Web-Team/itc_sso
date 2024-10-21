@@ -1,121 +1,256 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSO Service Documentation</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            padding: 20px;
-        }
-        h1, h2, h3 {
-            margin-top: 20px;
-        }
-        pre {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-    </style>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Developer Documentation</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css"
+        />
+        <style>
+            body {
+                background-color: #f8f9fa;
+                color: #333;
+            }
+            .container {
+                margin-top: 50px;
+            }
+            .card {
+                border-radius: 15px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            pre code {
+                padding: 1rem;
+                display: block;
+                background-color: #282c34;
+                color: #fff;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+            }
+            .hljs-keyword {
+                color: #ff79c6;
+            }
+            .hljs-string {
+                color: #f1fa8c;
+            }
+            .hljs-comment {
+                color: #6272a4;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg bg-light shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="https://www.tech-iitb.org">
+                    <img src="{% static 'img/logo.png' %}" alt="ITC Logo" height="40" />
+                </a>
+                <div class="collapse navbar-collapse shadow-xl">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'docs' %}">Documentation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://www.tech-iitb.org/contact">Contacts</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
-<div class="container">
-    <h1>Single Sign-On (SSO) Service Documentation</h1>
-    <p>Welcome to the documentation for our SSO service. This guide will help developers integrate and use our SSO service in their applications.</p>
+        <div class="container">
+            <div class="card p-5">
+                <h1 class="mb-4">ITC SSO Documentation
+                    <a href="{% url 'home' %}" class="text-decoration-none">
+                        <img src="{% static 'img/github.svg' %}" alt="github" height="20" />
+                    </a>
+                </h1>
+                <p>
+                    Welcome to the developer documentation for our SSO Application. Below
+                    you'll find all the necessary information to integrate with our
+                    services.
+                </p>
 
-    <h2>Table of Contents</h2>
-    <ul>
-        <li><a href="#getting-started">Getting Started</a></li>
-        <li><a href="#api-endpoints">API Endpoints</a></li>
-        <li><a href="#authentication-flow">Authentication Flow</a></li>
-        <li><a href="#error-handling">Error Handling</a></li>
-        <li><a href="#example-usage">Example Usage</a></li>
-        <li><a href="#faq">FAQ</a></li>
-    </ul>
+                <h2>1. Overview</h2>
+                <p>
+                    Our SSO service provides single sign-on functionality for various
+                    projects. You can integrate it into your system for seamless user
+                    authentication and authorization across multiple platforms.
+                </p>
 
-    <h2 id="getting-started">Getting Started</h2>
-    <p>To use our SSO service, you need to follow these steps:</p>
-    <ol>
-        <li>Register your application in the SSO service portal.</li>
-        <li>Obtain your API credentials (Client ID and Client Secret).</li>
-        <li>Integrate the SSO service using the provided API endpoints.</li>
-    </ol>
+                <h2>2. Authentication</h2>
+                <p>
+                    To use our APIs, you need to authenticate users via the login and
+                    registration endpoints. We use session-based authentication for
+                    logged-in users.
+                </p>
+                <ul>
+                    <li><strong>Login URL:</strong> <code>/login/</code> (POST)</li>
+                    <li><strong>Register URL:</strong> <code>/register/</code> (POST)</li>
+                    <li><strong>Logout URL:</strong> <code>/logout/</code> (GET)</li>
+                    <li>
+                        <strong>Confirm Email URL:</strong>
+                        <code>/confirm-email/&lt;token&gt;/</code> (GET)
+                    </li>
+                </ul>
 
-    <h2 id="api-endpoints">API Endpoints</h2>
-    <p>Here are the primary API endpoints available:</p>
-    <ul>
-        <li><strong>POST /api/register/</strong>: Register a new user.</li>
-        <li><strong>POST /api/login/</strong>: Authenticate a user.</li>
-        <li><strong>POST /api/verify-email/</strong>: Verify user email.</li>
-        <li><strong>POST /api/reset-password/</strong>: Request a password reset.</li>
-    </ul>
-
-    <h3>Example API Request</h3>
-    <pre><code>POST /api/login/
-Content-Type: application/json
-
+                <h3>Example: Login Request</h3>
+                <pre><code class="json">
+POST /login/
 {
-    "username": "roll_number",
-    "password": "user_password"
-}</code></pre>
-
-    <h2 id="authentication-flow">Authentication Flow</h2>
-    <p>The authentication flow consists of the following steps:</p>
-    <ol>
-        <li>User submits their roll number and password.</li>
-        <li>The system verifies the credentials.</li>
-        <li>If valid, a session token is generated and returned to the user.</li>
-        <li>The user can then use this token for subsequent requests to protected endpoints.</li>
-    </ol>
-
-    <h2 id="error-handling">Error Handling</h2>
-    <p>When interacting with the SSO service, you may encounter various error responses. Here are common HTTP status codes:</p>
-    <ul>
-        <li><strong>400 Bad Request</strong>: The request was invalid.</li>
-        <li><strong>401 Unauthorized</strong>: Authentication failed.</li>
-        <li><strong>403 Forbidden</strong>: Access to the resource is forbidden.</li>
-        <li><strong>404 Not Found</strong>: The requested resource was not found.</li>
-        <li><strong>500 Internal Server Error</strong>: An error occurred on the server.</li>
-    </ul>
-
-    <h2 id="example-usage">Example Usage</h2>
-    <p>Below is an example of how to use the SSO service in a Python application using the `requests` library:</p>
-    <pre><code>import requests
-
-# Login to SSO
-url = 'https://your-sso-service/api/login/'
-data = {
-    'username': 'your_roll_number',
-    'password': 'your_password'
+        "username": "user123",
+        "password": "securepassword"
 }
+                </code></pre>
 
-response = requests.post(url, json=data)
+                <h2>3. Retrieve Login Session</h2>
+                <p>
+                    After a successful login, the session is created for the user. You can
+                    retrieve login session data using the SSO session.
+                </p>
+                <ul>
+                    <li>
+                        <strong>Retrieve Session URL:</strong>
+                        <code>/project/getuserdata</code> (POST)
+                    </li>
+                </ul>
+                <h3>Example: Retrieve User Data</h3>
+                <p>
+                    Use the session ID to fetch user profile information linked to the
+                    session.
+                </p>
+                <pre><code class="json">
+POST /project/getuserdata
+{
+        "id": "session_id"
+}
+                </code></pre>
+                <h3>Response</h3>
+                <pre><code class="json">
+{
+        "name": "John Doe",
+        "roll": "12345",
+        "branch": "Computer Science",
+        "passing_year": 2024,
+        "course": "B.Tech"
+}
+                </code></pre>
 
+                <h2>4. SSO Integration</h2>
+                <p>
+                    To integrate our SSO service into your project, follow these steps:
+                </p>
+                <ol>
+                    <li>Ensure that users are logged in through our system.</li>
+                    <li>
+                        Once logged in, they can access their projects using the SSO session
+                        by calling <code>/project/&lt;id&gt;/ssocall/</code>.
+                    </li>
+                    <li>
+                        For SSO session data retrieval, use the
+                        <code>/project/getuserdata</code> endpoint.
+                    </li>
+                    <li>
+                        Make sure to handle session expiration by checking the validity of
+                        the session in your project.
+                    </li>
+                </ol>
+
+                <h2>5. Code Examples</h2>
+                <h3>Python Example (Requests Library)</h3>
+                <pre><code class="python">
+import requests
+
+login_url = 'https://yourdomain.com/login/'
+login_data = {'username': 'user123', 'password': 'securepassword'}
+
+response = requests.post(login_url, json=login_data)
 if response.status_code == 200:
-    token = response.json().get('token')
-    print(f'Logged in successfully. Token: {token}')
-else:
-    print(f'Error: {response.status_code} - {response.json().get("detail")}')
-</code></pre>
+        print(response.json()['message'])
 
-    <h2 id="faq">FAQ</h2>
-    <h3>How can I reset my password?</h3>
-    <p>You can request a password reset by calling the <strong>POST /api/reset-password/</strong> endpoint with your registered email.</p>
+# Fetch User Data using SSO session
+session_url = 'https://yourdomain.com/project/getuserdata'
+session_data = {'id': 'session_id'}
 
-    <h3>What should I do if I encounter an error?</h3>
-    <p>Refer to the error codes section above. If the problem persists, please contact support.</p>
+response = requests.post(session_url, json=session_data)
+if response.status_code == 200:
+        print(response.json())
+                </code></pre>
 
-    <h3>Can I use this service for multiple applications?</h3>
-    <p>Yes, you can register multiple applications and obtain separate API credentials for each.</p>
+                <h3>JavaScript Example (Fetch API)</h3>
+                <pre><code class="javascript">
+// Login request using Fetch API
+fetch('/login/', {
+        method: 'POST',
+        headers: {
+                'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+                username: 'user123',
+                password: 'securepassword'
+        }),
+})
+.then(response => response.json())
+.then(data => console.log(data.message))
+.catch(error => console.error('Error:', error));
 
-    <footer>
-        <hr>
-        <p>&copy; 2024 SSO Service. All rights reserved.</p>
-    </footer>
-</div>
+// Fetch user data using SSO session
+fetch('/project/getuserdata', {
+        method: 'POST',
+        headers: {
+                'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'session_id' }),
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                </code></pre>
 
-</body>
+                <h2>6. Error Handling</h2>
+                <h3>400 Bad Request</h3>
+                <pre><code class="json">
+{
+        "error": "Session ID is required."
+}
+                </code></pre>
+
+                <h3>403 Forbidden</h3>
+                <pre><code class="json">
+{
+        "error": "Session has expired."
+}
+                </code></pre>
+
+                <h3>404 Not Found</h3>
+                <pre><code class="json">
+{
+        "error": "Session not found."
+}
+                </code></pre>
+
+                <h2>7. Contact</h2>
+                <p>
+                    If you encounter any issues or need further assistance, feel free to
+                    reach out to our support team at
+                    <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.
+                </p>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+        <script>
+            hljs.highlightAll();
+        </script>
+    </body>
 </html>

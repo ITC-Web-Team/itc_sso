@@ -2,14 +2,57 @@
 
 {% block title %}Home{% endblock %}
 
-{% block header %}Welcome to SSO{% endblock %}
-
 {% block content %}
-<div class="text-center">
-    <p class="lead">Manage your single sign-on experience here.</p>
-    <div class="mt-4">
-        <a href="{% url 'login' %}" class="btn btn-primary me-2">Login</a>
-        <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
+
+<h1 class="text-center mb-4">ITC SSO</h1>
+{% if user.is_authenticated %}
+    <h3>Welcome, {{ user.username }}!</h3>
+    
+    {% if sso_sessions %}
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sso_sessions %}
+                <tr>
+                    <td>
+                        <span title="{{ session.device }}">{{ session.device|truncatechars:40 }}</span> <!-- Shortened device info -->
+                    </td>
+                    <td>
+                        {% if session.active %}
+                            <span class="badge bg-success">Active</span> <!-- Status indicator -->
+                        {% else %}
+                            <span class="badge bg-danger">Expired</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span title="{{ session.created_at|date:"d M Y H:i:s" }}">{{ session.created_at|timesince }} ago</span> <!-- Relative time format -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no active or previous SSO sessions.</p>
+    {% endif %}
+
+    <div class="text-center">
+        <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
     </div>
-</div>
+    
+{% else %}
+    <div class="text-center">
+        <p class="lead">Please login or register to access <br>( IITB students only )</p>
+        <div class="mt-4">
+            <a href="{% url 'login' %}" class="btn btn-primary me-2">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
+        </div>
+    </div>
+{% endif %}
+
 {% endblock %}

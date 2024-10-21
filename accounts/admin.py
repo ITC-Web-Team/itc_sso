@@ -8,6 +8,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.contrib import messages
 from .models import *
 
 class ProfileInline(admin.StackedInline):
@@ -22,18 +23,19 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'roll', 'email_verified')
     readonly_fields = ('email_verified', 'verification_token')
 
-    def has_change_permission(self, request, obj=None):
-        if obj is not None and 'email_verified' in request.POST:
-            return False
-        return super().has_change_permission(request, obj)
+def has_change_permission(self, request, obj=None):
+    if obj and 'email_verified' in request.POST:
+        messages.warning(request, 'You are not allowed to modify email verification status.')
+        return False
+    return super().has_change_permission(request, obj)
 
-# Unregister the default User admin
+
 admin.site.unregister(User)
 
-# Register the new User admin with Profile inline
+
 admin.site.register(User, UserAdmin)
 
-# Register the Profile model with custom admin
+
 admin.site.register(Profile, ProfileAdmin)
 
 admin.site.register(LoginSession)
@@ -41,6 +43,6 @@ admin.site.register(LoginSession)
 
 
 class ProjectsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'redirect_url')  # Add the 'id' to the list display
+    list_display = ('id', 'name', 'redirect_url')  
 
 admin.site.register(Projects, ProjectsAdmin)

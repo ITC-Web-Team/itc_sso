@@ -1,18 +1,13 @@
 {% extends "base.html" %}
 {% block title %}Error{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header text-center">
-                <h4>Error</h4>
-            </div>
-            <div class="card-body text-center">
-                <div class="alert alert-danger">
-                    An error occurred. Please try again later.
-                </div>
-            </div>
-        </div>
-    </div>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+  <strong>Error:</strong> {{ error }}
 </div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+  <strong>Error:</strong> An error occurred.
+</div>
+{% endif %}
 {% endblock %}

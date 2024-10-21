@@ -1,14 +1,29 @@
-import os
+import environ
 from pathlib import Path
+import os
 
+# Initialize environment variables
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
+
+# Secret and Debug settings
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
+
 SECRET_KEY = 'django-insecure-%v6iyxvv@r0ym56)^_s_o7#%**q)9g=lq(4$%$41_1^p(74lak'
 
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS_ALL = True
+CSRF_TRUSTED_ORIGINS_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+ALLOWED_HOSTS = ['*']
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -18,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'corsheaders',
     'widget_tweaks',
     'rest_framework',
 ]
@@ -54,10 +70,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -97,3 +118,10 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sso.itc.iitb@gmail.com'
 EMAIL_HOST_PASSWORD = 'jvppyjnbmvfgljoj'
+
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 1209600
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
