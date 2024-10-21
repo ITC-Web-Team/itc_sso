@@ -2,28 +2,23 @@ import environ
 from pathlib import Path
 import os
 
-# Initialize environment variables
+
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False) 
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
-# Secret and Debug settings
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY') 
 DEBUG = env('DEBUG')
 
-SECRET_KEY = 'django-insecure-%v6iyxvv@r0ym56)^_s_o7#%**q)9g=lq(4$%$41_1^p(74lak'
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS') 
 
-
-ALLOWED_HOSTS_ALL = True
-CSRF_TRUSTED_ORIGINS_ALL = True
-CORS_ORIGIN_ALLOW_ALL = True
-
-ALLOWED_HOSTS = ['*']
-
+CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', default=True) 
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')  
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -79,7 +74,6 @@ DATABASES = {
     }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -96,11 +90,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 STATIC_URL = '/static/'
@@ -116,12 +107,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'sso.itc.iitb@gmail.com'
-EMAIL_HOST_PASSWORD = 'jvppyjnbmvfgljoj'
-
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')  
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_AGE = 1209600
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 1209600  
+SESSION_COOKIE_SECURE = True  
+SESSION_COOKIE_HTTPONLY = True 
