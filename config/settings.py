@@ -19,6 +19,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', default=True) 
 CSRF_TRUSTED_ORIGINS_ALLOW_ALL = True
+CSRF_COOKIE_SAMESITE = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
