@@ -74,7 +74,7 @@ class SSOSession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     device = models.CharField(max_length=255)  
-    session_key = models.CharField(max_length=40)  
+    session_key = models.CharField(max_length=40, null=True)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

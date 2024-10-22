@@ -79,9 +79,14 @@ def login_view(request):
 def logout_view(request):
     """ Log the user out and update the SSO session to inactive """
     if request.user.is_authenticated:
-        session_key = request.session.session_key  # Get the current session key
-        SSOSession.objects.filter(user=request.user, session_key=session_key).update(active=False)
-    
+        try:
+            if request.session.session_key:
+                session_key = request.session.session_key
+                SSOSession.objects.filter(user=request.user, session_key=session_key).update(active=False)
+            else:
+                SSOSession.objects.filter(user=request.user, device=request.META['HTTP_USER_AGENT'][:100]).latest('created_at').update(active=False)
+        except SSOSession.DoesNotExist:
+            logger.error(f"Session not found for user {request.user.username}")
     auth_logout(request)
     messages.success(request, 'You have successfully logged out.')
     
