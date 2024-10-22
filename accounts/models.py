@@ -64,6 +64,7 @@ class SSOSession(models.Model):
     - id: A unique UUID for each SSO session.
     - user: A ForeignKey linking the session to a specific user.
     - device: The user's device (or browser) information from the user-agent string.
+    - session_key: The session key used to authenticate the user.
     - active: A boolean flag indicating if the session is currently active.
     - created_at: The timestamp when the session was created.
 
@@ -72,9 +73,13 @@ class SSOSession(models.Model):
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    device = models.CharField(max_length=100)
+    device = models.CharField(max_length=255)  
+    session_key = models.CharField(max_length=40)  
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_session_valid(self):
+        return self.created_at
 
     def is_session_valid(self):
         """

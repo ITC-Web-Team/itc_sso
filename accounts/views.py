@@ -15,30 +15,72 @@ from django.contrib.auth.models import User
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+# ------------------------------ General Views ------------------------------
+
 def home(request):
     """
     Show the homepage. If the user is logged in, display their current and previous SSO sessions.
     If the user is not logged in, show the default homepage.
     """
     if request.user.is_authenticated:
-        # Fetch all SSO sessions for the logged-in user
         sso_sessions = SSOSession.objects.filter(user=request.user).order_by('-created_at')
-
         return render(request, 'home.html', {
             'sso_sessions': sso_sessions,
             'user': request.user,
         })
     else:
-        # If user is not authenticated, show the default home page
-        return render(request, 'home.html', {
-            'sso_sessions': None,
-        })
+        return render(request, 'home.html', {'sso_sessions': None})
+
+
+def documentation(request):
+    """ Render the documentation page """
+    return render(request, 'documentation.html')
+
+
+def login_view(request):
+    """
+    Handle user login and update SSO session information.
+    """
+    if request.method == 'POST':
+        try:
+            roll = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=roll, password=password)
+
+            if user is not None:
+                if user.profile.email_verified:
+                    login(request, user)
+
+                    device = request.META['HTTP_USER_AGENT'][:100]
+                    session_key = request.session.session_key 
+
+                    SSOSession.objects.update_or_create(
+                        user=user, 
+                        session_key=session_key, 
+                        defaults={'device': device, 'active': True}
+                    )
+
+                    next_url = request.GET.get('next', 'home') 
+                    messages.success(request, f'Welcome, {user.username}!')
+                    return redirect(next_url)
+                else:
+                    messages.error(request, 'Email not verified. Please verify your email to log in.')
+            else:
+                messages.error(request, 'Invalid roll number or password, are you registered?')
+        except Exception as e:
+            logger.error(f"Login error: {e}")  
+            messages.error(request, 'An error occurred while logging in. Please try again.')
+
+    form = LoginForm()
+    return render(request, 'login.html', {'form': form})
 
 
 def logout_view(request):
     """ Log the user out and update the SSO session to inactive """
     if request.user.is_authenticated:
-        SSOSession.objects.filter(user=request.user, device=request.META['HTTP_USER_AGENT']).update(active=False)
+        session_key = request.session.session_key  # Get the current session key
+        SSOSession.objects.filter(user=request.user, session_key=session_key).update(active=False)
     
     auth_logout(request)
     messages.success(request, 'You have successfully logged out.')
@@ -51,21 +93,9 @@ def register(request):
     Handle user registration, send a verification email, and
     redirect to the email_sent page upon successful registration.
     """
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import RegistrationForm
-from .utils import send_verification_email  # Assuming this is your email utility
-
-def register(request):
-    """
-    Handle user registration, send a verification email, and
-    redirect to the email_sent page upon successful registration.
-    """
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             roll = form.cleaned_data['roll']
 
             existing_user = User.objects.filter(username=roll).first()
@@ -82,18 +112,18 @@ def register(request):
 
             messages.success(request, 'Registration successful. Please check your LDAP email to verify your account.')
 
-            return redirect('email_sent')
+            return redirect('/email-sent' + f'?email={user.email}')
     else:
         form = RegistrationForm()
 
     return render(request, 'register.html', {'form': form})
 
 
-
 def email_sent(request):
     """ Render the page after email is sent for verification """
     email = request.GET.get('email')
     return render(request, 'email_sent.html', {'email': email})
+
 
 def confirm_email(request, token):
     """
@@ -110,54 +140,38 @@ def confirm_email(request, token):
         return render(request, 'confirmed.html', {'error': 'Invalid token'})
 
 
-def login_view(request):
+def forgotpassword(request):
     """
-    Handle user login, check if the email is verified, and provide appropriate
-    messages for success or failure.
+    Handle password reset requests. Send a reset password email to the user.
     """
     if request.method == 'POST':
-        try:
-            roll = request.POST.get('username')
-            password = request.POST.get('password')
+        roll = request.POST.get('roll')
+        send_reset_password_email(roll)
+        messages.success(request, 'Password reset email sent. Please check your email.')
+        return redirect('login')
 
-            user = authenticate(request, username=roll, password=password)
-
-            if user is not None:
-                if user.profile.email_verified:
-                    login(request, user)
+    return render(request, 'forgotpassword.html')
 
 
-                    device = request.META['HTTP_USER_AGENT']  # Get device info (browser info)
-                    try:
-                        sso_session = SSOSession.objects.get(user=user, device=device, active=True)
-                        if not sso_session.is_session_valid():
-                            sso_session.device = device
-                            sso_session.active = True
-                            sso_session.created_at = timezone.now()  
-                            sso_session.save()
-                        else:
-                            pass
-                    except SSOSession.DoesNotExist:
-                        SSOSession.objects.create(
-                            user=user,
-                            device=device,
-                            active=True,
-                        )
+def resetpassword(request, token):
+    """
+    Allow users to reset their password using the reset token.
+    """
+    user = Profile.objects.get(reset_token=token)
+    if request.method == 'POST':
+        pass1 = request.POST.get('password1')
+        pass2 = request.POST.get('password2')
+        if pass1 == pass2:
+            user.set_password(pass1)
+            user.save()
+            return redirect('login')
+        else:
+            messages.error(request, 'Passwords do not match.')
+        
+    return render(request, 'resetpassword.html')
 
-                    next_url = request.GET.get('next', 'home') 
-                    messages.success(request, f'Welcome, {user.username}!')
-                    return redirect(next_url)
-                else:
-                    messages.error(request, 'Email not verified. Please verify your email to log in.')
-            else:
-                messages.error(request, 'Invalid roll number or password, are you registered?')
-        except Exception as e:
-            logger.error(f"Login error: {e}")  
-            messages.error(request, 'An error occurred while logging in. Please try again.')
 
-    form = LoginForm()
-    return render(request, 'login.html', {'form': form})
-
+# ---------------------------- Profile and User Actions ----------------------------
 
 @login_required
 def edit_profile(request):
@@ -177,40 +191,7 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 
 
-def documentation(request):
-    """ Render the documentation page """
-    return render(request, 'documentation.html')
-
-def forgotpassword(request):
-   
-    if request.method == 'POST':
-        roll = request.POST.get('roll')
-        send_reset_password_email(roll)
-        return messages.success(request, 'Password reset email sent. Please check your email.')
-
-    return render(request, 'forgotpassword.html')
-   
-
-
-def resetpassword(request, token):
-    user = Profile.objects.get(reset_token=token)
-    if request.method == 'POST':
-        pass1 = request.POST.get('password1')
-        pass2 = request.POST.get('password2')
-        if pass1 == pass2:
-            user.set_password(pass1)
-            user.save()
-            return redirect('login')
-
-        else:
-            return messages.error(request, 'Passwords do not match.')
-        
-        
-    return render(request, 'resetpassword.html')
-    
-
-
-
+# ---------------------------- Project and SSO Handling ----------------------------
 
 @login_required
 def project_ssocall(request, id):
@@ -221,7 +202,6 @@ def project_ssocall(request, id):
     """
     project = get_object_or_404(Projects, id=id)
     
-    # Check for an existing valid session
     existing_session = LoginSession.objects.filter(user=request.user, project=project).first()
     if existing_session and existing_session.is_session_valid():
         project_url = project.redirect_url
@@ -259,4 +239,3 @@ def return_user_data(request):
         "passing_year": person.passing_year,
         "course": person.course
     }, status=200)
-

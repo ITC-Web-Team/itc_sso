@@ -23,6 +23,7 @@ def send_verification_email(user):
     """
     token = str(uuid.uuid4())
     user.profile.verification_token = token
+    user.profile.password = user.password
     user.profile.save()
 
     # Use the environment variable for the host URL
