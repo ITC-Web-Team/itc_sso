@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from rest_framework import status
 import logging
+from django.contrib.auth.models import User
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -50,18 +51,43 @@ def register(request):
     Handle user registration, send a verification email, and
     redirect to the email_sent page upon successful registration.
     """
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import RegistrationForm
+from .utils import send_verification_email  # Assuming this is your email utility
+
+def register(request):
+    """
+    Handle user registration, send a verification email, and
+    redirect to the email_sent page upon successful registration.
+    """
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
+            print(form.cleaned_data)
+            roll = form.cleaned_data['roll']
+
+            existing_user = User.objects.filter(username=roll).first()
+            existing_profile = Profile.objects.filter(roll=roll).first()
+
+            if existing_user and existing_profile and not existing_profile.email_verified:
+                existing_user.delete()
+
             user = form.save()
-            user.email = user.username + '@iitb.ac.in'
+            user.email = f'{roll}@iitb.ac.in'  
             user.save()
+
             send_verification_email(user)
-            messages.success(request, 'Registration successful. Please check your ldap to verify your account.')
-            return redirect(f'email-sent' + '?email=' + user.username + '@iitb.ac.in')
+
+            messages.success(request, 'Registration successful. Please check your LDAP email to verify your account.')
+
+            return redirect('email_sent')
     else:
         form = RegistrationForm()
+
     return render(request, 'register.html', {'form': form})
+
 
 
 def email_sent(request):

@@ -22,6 +22,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     roll = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100, default='password')
     branch = models.CharField(max_length=100)
     passing_year = models.PositiveIntegerField()
     course = models.CharField(max_length=100)
