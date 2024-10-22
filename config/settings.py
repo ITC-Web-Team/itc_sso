@@ -18,9 +18,10 @@ DEBUG = env('DEBUG')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS') 
 
 CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', default=True) 
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
 CSRF_TRUSTED_ORIGINS_ALL = True
+CSRF_COOKIE_SECURE = True  
 CSRF_COOKIE_SAMESITE = 'None'
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
