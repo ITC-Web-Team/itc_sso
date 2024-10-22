@@ -126,7 +126,6 @@ def login_view(request):
                 if user.profile.email_verified:
                     login(request, user)
 
-                    # Handle SSO session management
 
                     device = request.META['HTTP_USER_AGENT']  # Get device info (browser info)
                     try:
@@ -145,21 +144,17 @@ def login_view(request):
                             active=True,
                         )
 
-                    # Check for 'next' parameter in the URL for redirection after login
-                    next_url = request.GET.get('next', 'home')  # Defaults to 'home' if next isn't present
+                    next_url = request.GET.get('next', 'home') 
                     messages.success(request, f'Welcome, {user.username}!')
                     return redirect(next_url)
                 else:
-                    # Email is not verified
                     messages.error(request, 'Email not verified. Please verify your email to log in.')
             else:
-                # User authentication failed
                 messages.error(request, 'Invalid roll number or password, are you registered?')
         except Exception as e:
-            logger.error(f"Login error: {e}")  # Log the error for debugging in production
+            logger.error(f"Login error: {e}")  
             messages.error(request, 'An error occurred while logging in. Please try again.')
 
-    # Render the login form on GET or failed POST
     form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
