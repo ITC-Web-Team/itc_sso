@@ -23,26 +23,23 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'roll', 'email_verified')
     readonly_fields = ('email_verified', 'verification_token')
 
-def has_change_permission(self, request, obj=None):
-    if obj and 'email_verified' in request.POST:
-        messages.warning(request, 'You are not allowed to modify email verification status.')
-        return False
-    return super().has_change_permission(request, obj)
 
+class LoginSessionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'project', 'created_at')
+    readonly_fields = ('user', 'project', 'created_at')
 
-admin.site.unregister(User)
-
-
-admin.site.register(User, UserAdmin)
-
-
-admin.site.register(Profile, ProfileAdmin)
-
-admin.site.register(LoginSession)
-# admin.site.unregister(Projects)
-
+class SSOSessionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'session_key', 'active')
+    readonly_fields = ('user', 'session_key', 'active')
 
 class ProjectsAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'redirect_url')  
 
+
+admin.site.unregister(User)
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Projects, ProjectsAdmin)
+admin.site.register(SSOSession, SSOSessionAdmin)
+admin.site.register(LoginSession, LoginSessionAdmin)
