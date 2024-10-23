@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}SSO Login - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card mx-auto shadow p-4" style="max-width: 400px;">
+        <h2 class="text-center mb-4">SSO Login to {{ project.name }}</h2>
+
+        <!-- Display the current user's name -->
+        <p class="text-center">You are about to log in as <strong>{{ user }}</strong>.</p>
+
+        <!-- Login Button -->
+        <a href="{{ redirecturl }}" class="btn btn-primary w-100">
+            Continue as {{ user }}
+        </a>
+
+        <p class="text-center mt-3">
+            <a href="{% url 'logout' %}?next={% url 'project_ssocall' project.id %}">
+                Log in as a different user
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %}

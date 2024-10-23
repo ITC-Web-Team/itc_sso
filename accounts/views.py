@@ -4,11 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Profile, Projects, LoginSession, SSOSession
 from .forms import RegistrationForm, LoginForm, EditProfileForm
-from .utils import send_verification_email, send_reset_password_email
-from rest_framework.decorators import api_view
-from django.utils import timezone
+from .utils import send_verification_email, send_reset_password_email, generate_encrypted_id
 from django.http import JsonResponse
 from rest_framework import status
+from rest_framework.decorators import api_view
 import logging
 from django.contrib.auth.models import User
 
@@ -19,33 +18,46 @@ logger = logging.getLogger(__name__)
 
 def home(request):
     """
-    Show the homepage. If the user is logged in, display their current and previous SSO sessions.
-    If the user is not logged in, show the default homepage.
+    Show the homepage. If the user is logged in, display their current and previous SSO sessions,
+    as well as all available projects. If the user is not logged in, show the default homepage.
     """
     if request.user.is_authenticated:
         sso_sessions = SSOSession.objects.filter(user=request.user).order_by('-created_at')
+        projects = Projects.objects.all() 
         return render(request, 'home.html', {
             'sso_sessions': sso_sessions,
             'user': request.user,
+            'projects': projects,
         })
     else:
-        return render(request, 'home.html', {'sso_sessions': None})
-
+        projects = Projects.objects.all()
+        return render(request, 'home.html', {
+            'sso_sessions': None,
+            'projects': projects,
+        })
 
 def documentation(request):
     """ Render the documentation page """
     return render(request, 'documentation.html')
 
-
 def login_view(request):
     """
     Handle user login and update SSO session information.
     """
+    next_url = request.GET.get('next', 'home')
+
+    if request.user.is_authenticated:
+        messages.success(request, f'Welcome, {request.user.username}!')
+        return redirect(next_url)
+
     if request.method == 'POST':
+        if request.user.is_authenticated:
+            messages.success(request, f'Welcome, {request.user.username}!')
+            return redirect(next_url)
+        
         try:
             roll = request.POST.get('username')
             password = request.POST.get('password')
-
             user = authenticate(request, username=roll, password=password)
 
             if user is not None:
@@ -53,15 +65,14 @@ def login_view(request):
                     login(request, user)
 
                     device = request.META['HTTP_USER_AGENT'][:100]
-                    session_key = request.session.session_key 
+                    session_key = request.session.session_key
 
                     SSOSession.objects.update_or_create(
-                        user=user, 
-                        session_key=session_key, 
+                        user=user,
+                        session_key=session_key,
                         defaults={'device': device, 'active': True}
                     )
-
-                    next_url = request.GET.get('next', 'home') 
+                    next_url = request.POST.get('next', next_url)
                     messages.success(request, f'Welcome, {user.username}!')
                     return redirect(next_url)
                 else:
@@ -69,15 +80,18 @@ def login_view(request):
             else:
                 messages.error(request, 'Invalid roll number or password, are you registered?')
         except Exception as e:
-            logger.error(f"Login error: {e}")  
+            logger.error(f"Login error: {e}")
             messages.error(request, 'An error occurred while logging in. Please try again.')
 
     form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'next': next_url})
 
 
 def logout_view(request):
-    """ Log the user out and update the SSO session to inactive """
+    """
+    Log the user out and update the SSO session to inactive.
+    Redirect to the next URL if provided.
+    """
     if request.user.is_authenticated:
         try:
             if request.session.session_key:
@@ -87,10 +101,12 @@ def logout_view(request):
                 SSOSession.objects.filter(user=request.user, device=request.META['HTTP_USER_AGENT'][:100]).latest('created_at').update(active=False)
         except SSOSession.DoesNotExist:
             logger.error(f"Session not found for user {request.user.username}")
+    
     auth_logout(request)
     messages.success(request, 'You have successfully logged out.')
-    
-    return redirect('login')
+    next_url = request.GET.get('next', 'login')
+    return redirect(next_url)
+
 
 
 def register(request):
@@ -195,7 +211,6 @@ def edit_profile(request):
         form = EditProfileForm(instance=profile)
     return render(request, 'edit_profile.html', {'form': form})
 
-
 # ---------------------------- Project and SSO Handling ----------------------------
 
 @login_required
@@ -205,17 +220,25 @@ def project_ssocall(request, id):
     If a valid session exists, the user is redirected to the project URL;
     otherwise, a new session is created.
     """
-    project = get_object_or_404(Projects, id=id)
-    
-    existing_session = LoginSession.objects.filter(user=request.user, project=project).first()
-    if existing_session and existing_session.is_session_valid():
-        project_url = project.redirect_url
-        return redirect(f"{project_url}?accessid={existing_session.id}")
-    
-    # Create a new session if no valid session exists
-    session = LoginSession.objects.create(user=request.user, project=project)
+    project = get_object_or_404(Projects, id=id)    
+    user = request.user
+
+    newid = generate_encrypted_id(user.id, id)
+
     project_url = project.redirect_url
-    return redirect(f"{project_url}?accessid={session.id}")
+    if LoginSession.objects.filter(sessionkey = newid).exists():
+        session = LoginSession.objects.get(sessionkey = newid)
+        if session.is_session_valid():
+            return redirect(f'{project_url}?accessid={session.sessionkey}')
+        else:
+            session.delete()
+    session = LoginSession.objects.create(sessionkey = newid, user=user, project=project)
+
+    return render(request, 'ssologin.html', {
+        'project': project, 
+        'redirecturl': f'{project_url}?accessid={session.sessionkey}',
+        'user': user.profile.name
+    })
 
 
 @api_view(['POST'])
@@ -229,7 +252,7 @@ def return_user_data(request):
         return JsonResponse({"error": "Session ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        session = LoginSession.objects.get(id=session_id)
+        session = LoginSession.objects.get(sessionkey=session_id)
     except LoginSession.DoesNotExist:
         return JsonResponse({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
 

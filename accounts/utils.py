@@ -5,6 +5,10 @@ import environ
 import os
 from pathlib import Path
 from .models import SSOSession
+import hashlib
+import base64
+import uuid
+from datetime import datetime
 
 # Initialize environment variables
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,3 +80,11 @@ def get_user_from_sso(request):
     if session:
         return session.user
     return None
+
+
+def generate_encrypted_id(user_id, project_id):
+    timestamp = datetime.now().strftime('%Y%m%d%H%M')
+    raw_string = f"{user_id}-{project_id}-{timestamp}"
+    hash_object = hashlib.sha256(raw_string.encode())
+    encrypted_id = base64.urlsafe_b64encode(hash_object.digest()).decode('utf-8')
+    return encrypted_id

@@ -33,7 +33,7 @@ class SSOSessionAdmin(admin.ModelAdmin):
     readonly_fields = ('user', 'session_key', 'active')
 
 class ProjectsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'redirect_url')  
+    list_display = ('id', 'name', 'redirect_url', 'description')  
 
 
 admin.site.unregister(User)

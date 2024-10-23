@@ -37,22 +37,23 @@ class Profile(models.Model):
 
 class Projects(models.Model):
     """
-    This model represents a project to which users can log in using SSO.
-
+    This model represents a project that users can log in to using SSO.
+    
     Fields:
-    - id: A unique UUID that identifies each project.
+    - id: A unique UUID for each project.
     - name: The name of the project.
-    - redirect_url: The URL to which the user will be redirected upon successful login.
-
-    Methods:
-    - __str__: Returns the name of the project as the string representation.
+    - redirect_url: The URL where users are redirected after logging in.
+    - description: A short description of the project.
+    - logo: An image representing the project (e.g., a logo).
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=100)
+    main_url = models.URLField(blank=True, null=True)
     redirect_url = models.URLField()
+    description = models.TextField(blank=True, null=True)
+    logo = models.ImageField(upload_to='project_logos/', blank=True, null=True)
 
     def __str__(self):
-        """Return the name of the project as a string representation."""
         return self.name
 
     
@@ -71,7 +72,7 @@ class SSOSession(models.Model):
     Methods:
     - is_session_valid: Determines if the session is still valid based on when it was created.
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     device = models.CharField(max_length=255)  
     session_key = models.CharField(max_length=40, null=True)
@@ -102,9 +103,11 @@ class LoginSession(models.Model):
     Methods:
     - is_session_valid: Checks if the session is valid based on the time limit (1 hour).
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    sessionkey = models.CharField(max_length=100, null=True)
     project = models.OneToOneField(Projects, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_session_valid(self):
