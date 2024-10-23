@@ -3,18 +3,18 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate
+from django.utils import timezone
 
 class RegistrationForm(UserCreationForm):
     roll = forms.CharField(max_length=10)
     name = forms.CharField(max_length=100)
-    branch = forms.CharField(max_length=100)
-    passing_year = forms.IntegerField()
-    course = forms.CharField(max_length=100)
+    department = forms.ChoiceField(choices=Profile.DEPARTMENT_CHOICES)
+    passing_year = forms.IntegerField(min_value=timezone.now().year-2, max_value=timezone.now().year+10)
+    degree = forms.ChoiceField(choices=Profile.DEGREE_CHOICES)
 
     class Meta:
         model = User
-        fields = ('name', 'roll', 'password1', 'password2', 'branch', 'passing_year', 'course')
+        fields = ('name', 'roll', 'department', 'degree', 'passing_year', 'password1', 'password2',)
 
     def clean_roll(self):
         roll = self.cleaned_data.get('roll')
@@ -31,16 +31,16 @@ class RegistrationForm(UserCreationForm):
                 user=user,
                 roll=self.cleaned_data["roll"],
                 name=self.cleaned_data["name"],
-                branch=self.cleaned_data["branch"],
+                department=self.cleaned_data["department"],
                 passing_year=self.cleaned_data["passing_year"],
-                course=self.cleaned_data["course"]
+                degree=self.cleaned_data["degree"]
             )
         return user
     
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('name', 'branch', 'passing_year', 'course')
+        fields = ('name', 'department', 'passing_year', 'degree')
 
 
 class LoginForm(AuthenticationForm):

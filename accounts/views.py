@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Profile, Projects, LoginSession, SSOSession
+from .models import Profile, Project, LoginSession, SSOSession
 from .forms import RegistrationForm, LoginForm, EditProfileForm
 from .utils import send_verification_email, send_reset_password_email, generate_encrypted_id
 from django.http import JsonResponse
@@ -14,26 +14,29 @@ from django.contrib.auth.models import User
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+
 # ------------------------------ General Views ------------------------------
 
 def home(request):
     """
     Show the homepage. If the user is logged in, display their current and previous SSO sessions,
-    as well as all available projects. If the user is not logged in, show the default homepage.
+    as well as all available Project. If the user is not logged in, show the default homepage.
     """
+
+    project = Project.objects.all()
+
     if request.user.is_authenticated:
         sso_sessions = SSOSession.objects.filter(user=request.user).order_by('-created_at')[0:5]
-        projects = Projects.objects.all() 
+        
         return render(request, 'home.html', {
             'sso_sessions': sso_sessions,
             'user': request.user,
-            'projects': projects,
+            'Project': project,
         })
     else:
-        projects = Projects.objects.all()
         return render(request, 'home.html', {
             'sso_sessions': None,
-            'projects': projects,
+            'Project': project,
         })
 
 def documentation(request):
@@ -45,6 +48,7 @@ def login_view(request):
     Handle user login and update SSO session information.
     """
     next_url = request.GET.get('next', 'home')
+    print(next_url)
 
     if request.user.is_authenticated:
         messages.success(request, f'Welcome, {request.user.username}!')
@@ -216,11 +220,11 @@ def edit_profile(request):
 @login_required
 def project_ssocall(request, id):
     """
-    Handle SSO (Single Sign-On) login for specific projects.
+    Handle SSO (Single Sign-On) login for specific Project.
     If a valid session exists, the user is redirected to the project URL;
     otherwise, a new session is created.
     """
-    project = get_object_or_404(Projects, id=id)    
+    project = get_object_or_404(Project, id=id)    
     user = request.user
 
     newid = generate_encrypted_id(user.id, project.id)
@@ -263,7 +267,7 @@ def return_user_data(request):
     return JsonResponse({
         "name": person.name,
         "roll": person.roll,
-        "branch": person.branch,
-        "passing_year": person.passing_year,
-        "course": person.course
+        "department": person.department,
+        "degree": person.degree,
+        "passing_year": person.passing_year
     }, status=200)

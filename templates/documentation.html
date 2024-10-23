@@ -2,106 +2,109 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Developer Documentation</title>
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css"
-        />
-        <style>
-            body {
-                background-color: #f8f9fa;
-                color: #333;
-            }
-            .container {
-                margin-top: 50px;
-            }
-            .card {
-                border-radius: 15px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
-            pre code {
-                padding: 1rem;
-                display: block;
-                background-color: #282c34;
-                color: #fff;
-                border-radius: 8px;
-                margin-bottom: 1rem;
-            }
-            .hljs-keyword {
-                color: #ff79c6;
-            }
-            .hljs-string {
-                color: #f1fa8c;
-            }
-            .hljs-comment {
-                color: #6272a4;
-            }
-        </style>
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg bg-light shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="https://www.tech-iitb.org">
-                    <img src="{% static 'img/logo.png' %}" alt="ITC Logo" height="40" />
-                </a>
-                <div class="collapse navbar-collapse shadow-xl">
-                    <ul class="navbar-nav ms-auto align-items-center">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://www.tech-iitb.org/contact">Contacts</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Developer Documentation</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        color: #333;
+      }
+      .container {
+        margin-top: 50px;
+      }
+      .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      pre code {
+        padding: 1rem;
+        display: block;
+        background-color: #282c34;
+        color: #fff;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+      }
+      .hljs-keyword {
+        color: #ff79c6;
+      }
+      .hljs-string {
+        color: #f1fa8c;
+      }
+      .hljs-comment {
+        color: #6272a4;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-light shadow-sm">
+      <div class="container">
+        <a class="navbar-brand" href="https://www.tech-iitb.org">
+          <img src="{% static 'img/logo.png' %}" alt="ITC Logo" height="40" />
+        </a>
+        <div class="collapse navbar-collapse shadow-xl">
+          <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://www.tech-iitb.org/contact"
+                >Contacts</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-        <div class="container">
-            <div class="card p-5">
-                <h1 class="mb-4">ITC SSO Documentation
-                    <a href="{% url 'home' %}" class="text-decoration-none">
-                        <img src="{% static 'img/github.svg' %}" alt="github" height="20" />
-                    </a>
-                </h1>
-                <p>
-                    Welcome to the developer documentation for our SSO Application. Below
-                    you'll find all the necessary information to integrate with our
-                    services.
-                </p>
+    <div class="container">
+      <div class="card p-5">
+        <h1 class="mb-4">
+          ITC SSO Documentation
+          <a href="{% url 'home' %}" class="text-decoration-none">
+            <img src="{% static 'img/github.svg' %}" alt="github" height="20" />
+          </a>
+        </h1>
+        <p>
+          Welcome to the developer documentation for our SSO Application. Below
+          you'll find all the necessary information to integrate with our
+          services.
+        </p>
 
-                <h2>1. Overview</h2>
-                <p>
-                    Our SSO service provides single sign-on functionality for various
-                    projects. You can integrate it into your system for seamless user
-                    authentication and authorization across multiple platforms.
-                </p>
+        <h2>1. Overview</h2>
+        <p>
+          Our SSO service provides single sign-on functionality for various
+          Project. You can integrate it into your system for seamless user
+          authentication and authorization across multiple platforms.
+        </p>
 
-                <h2>2. Authentication</h2>
-                <p>
-                    To use our APIs, you need to authenticate users via the login and
-                    registration endpoints. We use session-based authentication for
-                    logged-in users.
-                </p>
-                <ul>
-                    <li><strong>Login URL:</strong> <code>/login/</code> (POST)</li>
-                    <li><strong>Register URL:</strong> <code>/register/</code> (POST)</li>
-                    <li><strong>Logout URL:</strong> <code>/logout/</code> (GET)</li>
-                    <li>
-                        <strong>Confirm Email URL:</strong>
-                        <code>/confirm-email/&lt;token&gt;/</code> (GET)
-                    </li>
-                </ul>
+        <h2>2. Authentication</h2>
+        <p>
+          To use our APIs, you need to authenticate users via the login and
+          registration endpoints. We use session-based authentication for
+          logged-in users.
+        </p>
+        <ul>
+          <li><strong>Login URL:</strong> <code>/login/</code> (POST)</li>
+          <li><strong>Register URL:</strong> <code>/register/</code> (POST)</li>
+          <li><strong>Logout URL:</strong> <code>/logout/</code> (GET)</li>
+          <li>
+            <strong>Confirm Email URL:</strong>
+            <code>/confirm-email/&lt;token&gt;/</code> (GET)
+          </li>
+        </ul>
 
-                <h3>Example: Login Request</h3>
-                <pre><code class="json">
+        <h3>Example: Login Request</h3>
+        <pre><code class="json">
 POST /login/
 {
         "username": "user123",
@@ -109,30 +112,30 @@ POST /login/
 }
                 </code></pre>
 
-                <h2>3. Retrieve Login Session</h2>
-                <p>
-                    After a successful login, the session is created for the user. You can
-                    retrieve login session data using the SSO session.
-                </p>
-                <ul>
-                    <li>
-                        <strong>Retrieve Session URL:</strong>
-                        <code>/project/getuserdata</code> (POST)
-                    </li>
-                </ul>
-                <h3>Example: Retrieve User Data</h3>
-                <p>
-                    Use the session ID to fetch user profile information linked to the
-                    session.
-                </p>
-                <pre><code class="json">
+        <h2>3. Retrieve Login Session</h2>
+        <p>
+          After a successful login, the session is created for the user. You can
+          retrieve login session data using the SSO session.
+        </p>
+        <ul>
+          <li>
+            <strong>Retrieve Session URL:</strong>
+            <code>/project/getuserdata</code> (POST)
+          </li>
+        </ul>
+        <h3>Example: Retrieve User Data</h3>
+        <p>
+          Use the session ID to fetch user profile information linked to the
+          session.
+        </p>
+        <pre><code class="json">
 POST /project/getuserdata
 {
         "id": "session_id"
 }
                 </code></pre>
-                <h3>Response</h3>
-                <pre><code class="json">
+        <h3>Response</h3>
+        <pre><code class="json">
 {
         "name": "John Doe",
         "roll": "12345",
@@ -142,29 +145,29 @@ POST /project/getuserdata
 }
                 </code></pre>
 
-                <h2>4. SSO Integration</h2>
-                <p>
-                    To integrate our SSO service into your project, follow these steps:
-                </p>
-                <ol>
-                    <li>Ensure that users are logged in through our system.</li>
-                    <li>
-                        Once logged in, they can access their projects using the SSO session
-                        by calling <code>/project/&lt;id&gt;/ssocall/</code>.
-                    </li>
-                    <li>
-                        For SSO session data retrieval, use the
-                        <code>/project/getuserdata</code> endpoint.
-                    </li>
-                    <li>
-                        Make sure to handle session expiration by checking the validity of
-                        the session in your project.
-                    </li>
-                </ol>
+        <h2>4. SSO Integration</h2>
+        <p>
+          To integrate our SSO service into your project, follow these steps:
+        </p>
+        <ol>
+          <li>Ensure that users are logged in through our system.</li>
+          <li>
+            Once logged in, they can access their Project using the SSO session
+            by calling <code>/project/&lt;id&gt;/ssocall/</code>.
+          </li>
+          <li>
+            For SSO session data retrieval, use the
+            <code>/project/getuserdata</code> endpoint.
+          </li>
+          <li>
+            Make sure to handle session expiration by checking the validity of
+            the session in your project.
+          </li>
+        </ol>
 
-                <h2>5. Code Examples</h2>
-                <h3>Python Example (Requests Library)</h3>
-                <pre><code class="python">
+        <h2>5. Code Examples</h2>
+        <h3>Python Example (Requests Library)</h3>
+        <pre><code class="python">
 import requests
 
 login_url = 'https://yourdomain.com/login/'
@@ -183,8 +186,8 @@ if response.status_code == 200:
         print(response.json())
                 </code></pre>
 
-                <h3>JavaScript Example (Fetch API)</h3>
-                <pre><code class="javascript">
+        <h3>JavaScript Example (Fetch API)</h3>
+        <pre><code class="javascript">
 // Login request using Fetch API
 fetch('/login/', {
         method: 'POST',
@@ -213,41 +216,41 @@ fetch('/project/getuserdata', {
 .catch(error => console.error('Error:', error));
                 </code></pre>
 
-                <h2>6. Error Handling</h2>
-                <h3>400 Bad Request</h3>
-                <pre><code class="json">
+        <h2>6. Error Handling</h2>
+        <h3>400 Bad Request</h3>
+        <pre><code class="json">
 {
         "error": "Session ID is required."
 }
                 </code></pre>
 
-                <h3>403 Forbidden</h3>
-                <pre><code class="json">
+        <h3>403 Forbidden</h3>
+        <pre><code class="json">
 {
         "error": "Session has expired."
 }
                 </code></pre>
 
-                <h3>404 Not Found</h3>
-                <pre><code class="json">
+        <h3>404 Not Found</h3>
+        <pre><code class="json">
 {
         "error": "Session not found."
 }
                 </code></pre>
 
-                <h2>7. Contact</h2>
-                <p>
-                    If you encounter any issues or need further assistance, feel free to
-                    reach out to our support team at
-                    <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.
-                </p>
-            </div>
-        </div>
+        <h2>7. Contact</h2>
+        <p>
+          If you encounter any issues or need further assistance, feel free to
+          reach out to our support team at
+          <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.
+        </p>
+      </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-        <script>
-            hljs.highlightAll();
-        </script>
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
 </html>

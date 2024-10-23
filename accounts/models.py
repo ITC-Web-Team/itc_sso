@@ -19,14 +19,52 @@ class Profile(models.Model):
     Relationships:
     - user: One-to-One relationship with the User model.
     """
+    DEPARTMENT_CHOICES = [
+        ('AE', 'Aerospace Engineering'),
+        ('BB', 'Biosciences and Bioengineering'),
+        ('CE', 'Chemical Engineering'),
+        ('CH', 'Chemistry'),
+        ('CE', 'Civil Engineering'),
+        ('CSE', 'Computer Science & Engineering'),
+        ('ES', 'Earth Sciences'),
+        ('EE', 'Electrical Engineering'),
+        ('ESE', 'Energy Science and Engineering'),
+        ('ESED', 'Environmental Science and Engineering'),
+        ('HSS', 'Humanities & Social Science'),
+        ('IEOR', 'Industrial Engineering & Operations Research'),
+        ('MA', 'Mathematics'),
+        ('ME', 'Mechanical Engineering'),
+        ('ME', 'Metallurgical Engineering & Materials Science'),
+        ('PH', 'Physics'),
+        ('IDC', 'Industrial Design Centre'),
+        ('SOM', 'Shailesh J. Mehta School of Management'),
+        ('Other', 'Other')
+    ]
+
+    DEGREE_CHOICES = [
+        ('B.Tech', 'B.Tech'),
+        ('M.Tech', 'M.Tech'),
+        ('PhD', 'PhD'),
+        ('MS', 'MS'),
+        ('MBA', 'MBA'),
+        ('M.Des', 'M.Des'),
+        ('M.Sc', 'M.Sc'),
+        ('MA', 'MA'),
+        ('B.Des', 'B.Des'),
+        ('B.Sc', 'B.Sc'),
+        ('BA', 'BA'),
+        ('Other', 'Other')
+
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     roll = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=100, default='password')
-    branch = models.CharField(max_length=100)
+    department = models.CharField(choices=DEPARTMENT_CHOICES, max_length=100, default='CE')
     passing_year = models.PositiveIntegerField()
-    course = models.CharField(max_length=100)
     email_verified = models.BooleanField(default=False)
+    degree = models.CharField( choices=DEGREE_CHOICES, max_length=100 ,default='B.Tech')
     verification_token = models.CharField(max_length=100, blank=True)
     reset_token = models.CharField(max_length=100, blank=True)
 
@@ -35,7 +73,7 @@ class Profile(models.Model):
         return self.roll
 
 
-class Projects(models.Model):
+class Project(models.Model):
     """
     This model represents a project that users can log in to using SSO.
     
@@ -72,7 +110,6 @@ class SSOSession(models.Model):
     Methods:
     - is_session_valid: Determines if the session is still valid based on when it was created.
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     device = models.CharField(max_length=255)  
     session_key = models.CharField(max_length=40, null=True)
@@ -88,7 +125,7 @@ class SSOSession(models.Model):
     
 class LoginSession(models.Model):
     """
-    This model tracks login sessions for users for specific projects.
+    This model tracks login sessions for users for specific Project.
 
     Fields:
     - id: A unique UUID for each login session.
@@ -99,10 +136,9 @@ class LoginSession(models.Model):
     Methods:
     - is_session_valid: Checks if the session is valid based on the time limit (1 hour).
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     sessionkey = models.CharField(max_length=100, unique=True)
-    project = models.OneToOneField(Projects, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

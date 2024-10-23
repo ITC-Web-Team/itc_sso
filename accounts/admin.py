@@ -31,7 +31,7 @@ class SSOSessionAdmin(admin.ModelAdmin):
     list_display = ('user', 'session_key', 'active')
     readonly_fields = ('user', 'session_key', 'active')
 
-class ProjectsAdmin(admin.ModelAdmin):
+class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'redirect_url', 'description')  
 
 
@@ -39,6 +39,6 @@ admin.site.unregister(User)
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(Projects, ProjectsAdmin)
+admin.site.register(Project, ProjectAdmin)
 admin.site.register(SSOSession, SSOSessionAdmin)
 admin.site.register(LoginSession, LoginSessionAdmin)
