@@ -80,16 +80,12 @@ class SSOSession(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_session_valid(self):
-        return self.created_at
-
-    def is_session_valid(self):
-        """
-        Returns the session's creation time. 
-        Additional validation logic can be added to check if the session is valid 
-        based on expiration time.
-        """
-        return self.created_at
-
+        if timezone.now() <= self.created_at + timedelta(hours=1):
+            self.created_at = timezone.now()
+        else:
+            self.active = False
+        return self.active
+    
 class LoginSession(models.Model):
     """
     This model tracks login sessions for users for specific projects.
@@ -104,8 +100,8 @@ class LoginSession(models.Model):
     - is_session_valid: Checks if the session is valid based on the time limit (1 hour).
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    sessionkey = models.CharField(max_length=100, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    sessionkey = models.CharField(max_length=100, unique=True)
     project = models.OneToOneField(Projects, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

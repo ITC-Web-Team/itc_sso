@@ -22,7 +22,7 @@ def home(request):
     as well as all available projects. If the user is not logged in, show the default homepage.
     """
     if request.user.is_authenticated:
-        sso_sessions = SSOSession.objects.filter(user=request.user).order_by('-created_at')
+        sso_sessions = SSOSession.objects.filter(user=request.user).order_by('-created_at')[0:5]
         projects = Projects.objects.all() 
         return render(request, 'home.html', {
             'sso_sessions': sso_sessions,
@@ -223,7 +223,7 @@ def project_ssocall(request, id):
     project = get_object_or_404(Projects, id=id)    
     user = request.user
 
-    newid = generate_encrypted_id(user.id, id)
+    newid = generate_encrypted_id(user.id, project.id)
 
     project_url = project.redirect_url
     if LoginSession.objects.filter(sessionkey = newid).exists():

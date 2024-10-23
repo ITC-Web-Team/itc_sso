@@ -23,7 +23,6 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'roll', 'email_verified')
     readonly_fields = ('email_verified', 'verification_token')
 
-
 class LoginSessionAdmin(admin.ModelAdmin):
     list_display = ('user', 'project', 'created_at')
     readonly_fields = ('user', 'project', 'created_at')

@@ -9,8 +9,9 @@ import hashlib
 import base64
 import uuid
 from datetime import datetime
+from .models import LoginSession
+import time
 
-# Initialize environment variables
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
@@ -83,8 +84,11 @@ def get_user_from_sso(request):
 
 
 def generate_encrypted_id(user_id, project_id):
-    timestamp = datetime.now().strftime('%Y%m%d%H%M')
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     raw_string = f"{user_id}-{project_id}-{timestamp}"
     hash_object = hashlib.sha256(raw_string.encode())
     encrypted_id = base64.urlsafe_b64encode(hash_object.digest()).decode('utf-8')
+    if LoginSession.objects.filter(sessionkey=encrypted_id).exists():
+        time.sleep(1)
+        return generate_encrypted_id(user_id, project_id)
     return encrypted_id
