@@ -14,6 +14,7 @@ import time
 from .email_utils import send_email
 from django.template.loader import render_to_string
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
@@ -31,7 +32,7 @@ def send_verification_email(user):
     profile.save()
     
     # Construct verification link
-    verification_link = f"https://yourdomain.com{reverse('confirm_email', kwargs={'token': token})}"
+    verification_link = f"{env('HOST_URL')}{reverse('confirm_email', kwargs={'token': token})}"
     
     # Render HTML email template
     html_message = render_to_string('emails/verification_email.html', {
@@ -63,8 +64,8 @@ def send_reset_password_email(user):
     profile.save()
     
     # Construct reset link
-    reset_link = f"https://yourdomain.com{reverse('resetpassword', kwargs={'token': token})}"
-    
+    reset_link = f"{env('HOST_URL')}{reverse('resetpassword', kwargs={'token': token})}"
+
     # Render HTML email template
     html_message = render_to_string('emails/reset_password_email.html', {
         'user': user,
