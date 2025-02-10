@@ -1,107 +1,141 @@
-# Django SSO Application
+# 🔐 SSO: One Login To Rule Them All
 
-A Django-based Single Sign-On (SSO) application that uses roll numbers as usernames. The application features user registration, email verification, login, and password reset functionality.
+A Django-powered Single Sign-On (SSO) service that lets you authenticate once and rule all your applications. Because who has time to remember multiple passwords?
 
-## Features
+![SSO Flow Diagram](/static/img/sso-flow.png)
 
-- **User Registration**: Users can register using their roll number, name, branch, passing year, and course.
-- **Email Verification**: After registration, users receive an email to verify their account before logging in.
-- **Login**: Users can log in using their roll number and password.
-- **Password Reset**: If a user forgets their password, they can request a password reset via email.
-- **Profile Management**: Users can update their profile information (name, branch, passing year, course) once logged in.
+## 🚀 Features That Make Life Easier
 
-## Tech Stack
+- **Seamless Authentication**: One account to access them all, one password to find them
+- **Session Management**: Keep track of who's who in your digital kingdom
+- **API Integration**: RESTful endpoints that play nice with others
+- **Security First**: Because we care about your digital well-being
+- **User Management**: Control who gets the keys to your kingdom
 
-- **Backend**: Django 4.x
-- **Frontend**: Django Template Engine (HTML, CSS)
-- **Database**: SQLite (default) or any other Django-supported database
-- **Email**: SMTP-based email service for sending verification and password reset emails
+## 🛠️ Tech Stack
 
-## Installation
+- **Backend**: Django 4.x (Because Python is love ❤️)
+- **Database**: PostgreSQL (The elephant that never forgets 🐘)
+- **Cache**: Redis (Because speed is what you need ⚡)
+- **API**: Django REST Framework (RESTful done right ✨)
 
-1. Clone the repository:
+## 🏃‍♂️ Quick Start
 
-    ```bash
-    git clone https://github.com/your-username/django-sso-app.git
-    cd django-sso-app
-    ```
+1. Clone this bad boy:
 
-2. Create a virtual environment and activate it:
+   ```bash
+   git clone https://github.com/devclub-iitd/SingleSignOn.git
+   cd SingleSignOn
+   ```
 
-    ```bash
-    python3 -m venv env
-    source env/bin/activate   # For Windows: env\Scripts\activate
-    ```
+2. Set up your virtual environment (because isolation is good):
 
-3. Install the required dependencies:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+3. Install dependencies:
 
-4. Create a `.env` file in the root of the project to store your sensitive information:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-    ```bash
-    touch .env
-    ```
+4. Create your `.env` file (shhh... it's a secret):
 
-    Add the following environment variables to the `.env` file:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your super secret configurations
+   ```
 
-    ```bash
-    SECRET_KEY=your_secret_key
-    EMAIL_HOST=smtp.your-email-service.com
-    EMAIL_PORT=your_email_port
-    EMAIL_HOST_USER=your_email_address
-    EMAIL_HOST_PASSWORD=your_email_password
-    EMAIL_USE_TLS=True   # or False depending on your configuration
-    ```
+5. Run migrations:
 
-5. Run the migrations to set up the database:
+   ```bash
+   python manage.py migrate
+   ```
 
-    ```bash
-    python manage.py migrate
-    ```
+6. Create a superuser (with great power comes great responsibility):
 
-6. Create a superuser for accessing the Django admin panel:
+   ```bash
+   python manage.py createsuperuser
+   ```
 
-    ```bash
-    python manage.py createsuperuser
-    ```
+7. Launch the rocket:
 
-7. Run the development server:
-
-    ```bash
-    python manage.py runserver
-    ```
+   ```bash
+   python manage.py runserver
+   ```
 
 8. Access the application at `http://127.0.0.1:8000`.
 
-## Usage
+## 🔌 Integration
 
-### Registration
+### Client Side
 
-- Navigate to the registration page (`/register/`) and fill in the required information (roll number, name, branch, passing year, course, password).
-- After submitting the form, an email will be sent to verify your account.
+```python
+from sso_client import SSOClient
 
-### Login
+sso = SSOClient(
+    client_id="your_client_id",
+    client_secret="your_client_secret"
+)
 
-- Once your email is verified, you can log in with your roll number and password on the login page (`/login/`).
+# Magic happens here
+user = sso.authenticate(token)
+```
 
-### Password Reset
+### Server Side
 
-- If you forget your password, go to the password reset page (`/reset_password/`) and enter your email address. You will receive a link to reset your password.
+```python
+@login_required
+def your_protected_view(request):
+    return HttpResponse("If you see this, you're authenticated! 🎉")
+```
 
-## Email Verification
+## 🔒 Security Features
 
-The system ensures that users cannot log in until they have verified their email. During registration, a verification email is sent to the provided email address with a unique token. Clicking the link in the email will complete the verification process.
+- JWT-based authentication (because we're fancy)
+- Rate limiting (to keep the bad guys at bay)
+- Session encryption (your secrets are safe with us)
+- CORS protection (because boundaries are important)
 
-## Profile Management
+## 🌐 API Endpoints
 
-Users can update their profile information after logging in by visiting their profile page. The following fields can be updated:
-- Name
-- Branch
-- Passing year
-- Course
+| Endpoint            | Method | Description            |
+| ------------------- | ------ | ---------------------- |
+| `/api/auth/login/`  | POST   | Get your golden ticket |
+| `/api/auth/verify/` | POST   | Make sure you're you   |
+| `/api/user/data/`   | GET    | Get the user details   |
+
+## 🤝 Contributing
+
+1. Fork it (because sharing is caring)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request (let's make this project awesome together!)
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Coffee ☕ - For making this possible
+- Stack Overflow 🚀 - Our faithful companion
+- Bug reporters 🐛 - For keeping us humble
+
+## 🤔 Need Help?
+
+- 📚 Check out our [Documentation](https://sso.devclub.in/docs)
+- 🐞 Found a bug? [Open an issue](https://github.com/devclub-iitd/SingleSignOn/issues)
+- 💬 Want to contribute? Join our [Discord](https://discord.gg/devclub)
+
+---
+
+Made with ❤️ by [DevClub IITD](https://devclub.in)
+
+_Remember: In a world full of passwords, be the SSO provider!_ 🦸‍♂️
 
 ## Folder Structure
 
@@ -135,4 +169,3 @@ django-sso-app/
     └── wsgi.py               # WSGI entry point
 
 ```
-

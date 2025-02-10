@@ -1,142 +1,169 @@
 {% extends 'base.html' %} {% load static %} {% block title %}Developer
 Documentation{% endblock %} {% block content %}
-<div class="card">
-  <div class="card-body p-5">
-    <h1 class="mb-4">
-      <i class="fas fa-book me-2 text-primary"></i>ITC SSO Documentation
-    </h1>
-
-    <div class="alert alert-info">
-      <i class="fas fa-info-circle me-2"></i>
-      Welcome to the comprehensive guide for integrating with the ITC Single
-      Sign-On (SSO) service.
+<div class="container">
+  <div class="card">
+    <div class="header-section">
+      <h1>SSO Integration Documentation</h1>
+      <a href="https://github.com/ITC-Web-Team/itc_sso" class="github-link" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github"></i> View on GitHub
+      </a>
     </div>
 
-    <section class="mb-5">
-      <h2 class="h4 mb-3">1. Overview</h2>
-      <p>
-        The ITC SSO service provides a secure, centralized authentication
-        mechanism for IITB students and projects. It allows seamless login
-        across multiple platforms while maintaining robust security standards.
-      </p>
-    </section>
-
-    <section class="mb-5">
-      <h2 class="h4 mb-3">2. Authentication Flow</h2>
-      <div class="card bg-light mb-3">
-        <div class="card-body">
-          <ol>
-            <li>Register your project with ITC SSO</li>
-            <li>Obtain your unique Project ID</li>
-            <li>Implement SSO login endpoint</li>
-            <li>Verify user data using session key</li>
-          </ol>
+    <div class="card-body p-5">
+      <section class="mb-5">
+        <h2 class="h4 mb-3">1. Overview</h2>
+        <p>
+          The ITC SSO service provides a secure, centralized authentication system for IITB projects. 
+          It enables users to log in once and access multiple applications without re-entering credentials.
+        </p>
+        
+        <div class="flow-diagram">
+          <img src={%static "img/sso-flow.png" %} alt="SSO Flow Diagram" class="img-fluid">
+          <div class="diagram-caption">
+            SSO Authentication and Data Flow Diagram
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="mb-5">
-      <h2 class="h4 mb-3">3. API Endpoints</h2>
-      <table class="table table-bordered">
-        <thead class="table-light">
-          <tr>
-            <th>Endpoint</th>
-            <th>Method</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>/project/&lt;project_id&gt;/ssocall/</code></td>
-            <td>GET</td>
-            <td>SSO Login Redirect</td>
-          </tr>
-          <tr>
-            <td><code>/project/getuserdata</code></td>
-            <td>POST</td>
-            <td>Retrieve User Session Data</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+      <section class="mb-5">
+        <h2 class="h4 mb-3">2. Authentication Flow</h2>
+        <div class="card bg-light mb-3">
+          <div class="card-body">
+            <ol>
+              <li>
+                <strong>Initial SSO Request:</strong>
+                <ul>
+                  <li>Client redirects to: <code>sso.tech-iitb.org/project/&lt;project_id&gt;/ssocall/</code></li>
+                  <li>User is taken to the SSO login page if not already authenticated</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Authentication Response:</strong>
+                <ul>
+                  <li>After successful login, user is redirected to: <code>&lt;client_redirect_url&gt;?accessid=&lt;session_key&gt;</code></li>
+                  <li>The session key is unique for each authentication session</li>
+                </ul>
+              </li>
+              <li>
+                <strong>User Data Retrieval:</strong>
+                <ul>
+                  <li>Client makes POST request to: <code>https://sso.iitb.ac.in/project/getuserdata</code></li>
+                  <li>Request body must include the session key</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Data Response:</strong>
+                <ul>
+                  <li>SSO returns user profile data in JSON format</li>
+                  <li>Includes: name, roll number, department, degree, and passing year</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
 
-    <section class="mb-5">
-      <h2 class="h4 mb-3">4. Code Examples</h2>
+      <section class="mb-5">
+        <h2 class="h4 mb-3">3. Integration Steps</h2>
+        <div class="card bg-light mb-3">
+          <div class="card-body">
+            <ol>
+              <li>Register your project in the SSO dashboard</li>
+              <li>Configure your redirect URL</li>
+              <li>Implement the authentication flow</li>
+              <li>Handle the user data response</li>
+            </ol>
+          </div>
+        </div>
+      </section>
 
-      <div class="card mb-3">
-        <div class="card-header">Python Example (Requests Library)</div>
-        <div class="card-body">
-          <pre><code class="python">
+      <section class="mb-5">
+        <h2 class="h4 mb-3">4. Code Examples</h2>
+
+        <div class="card mb-3">
+          <div class="card-header">Python Example</div>
+          <div class="card-body">
+            <pre><code class="python">
 import requests
 
-# SSO Login URL
-login_url = 'https://sso.iitb.ac.in/project/&lt;project_id&gt;/ssocall/'
+# Step 1: Redirect user to SSO
+sso_url = f'https://sso.tech-iitb.org/project/{project_id}/ssocall/'
+# Redirect user to sso_url
 
-# User Data Retrieval
-user_data_url = 'https://sso.iitb.ac.in/project/getuserdata'
-payload = {
-    'sessionkey': 'user_session_key'
+# Step 2: Handle the redirect with session key
+# Your redirect endpoint will receive: ?accessid=<session_key>
+
+# Step 3: Retrieve user data
+def get_user_data(session_key):
+    response = requests.post(
+        'https://sso.iitb.ac.in/project/getuserdata',
+        json={'sessionkey': session_key}
+    )
+    return response.json()
+
+# Response format:
+# {
+#     "name": "User Name",
+#     "roll": "123456789",
+#     "department": "Computer Science",
+#     "degree": "BTech",
+#     "passing_year": "2024"
+# }
+            </code></pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">JavaScript Example</div>
+          <div class="card-body">
+            <pre><code class="javascript">
+// Step 1: Redirect to SSO
+function redirectToSSO(projectId) {
+    window.location.href = `https://sso.tech-iitb.org/project/${projectId}/ssocall/`;
 }
 
-response = requests.post(user_data_url, json=payload)
-user_info = response.json()
-                    </code></pre>
+// Step 2: Handle the redirect and get user data
+async function handleSSORedirect() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionKey = urlParams.get('accessid');
+    
+    if (sessionKey) {
+        const userData = await getUserData(sessionKey);
+        console.log('User Data:', userData);
+    }
+}
+
+// Step 3: Fetch user data
+async function getUserData(sessionKey) {
+    const response = await fetch('https://sso.iitb.ac.in/project/getuserdata', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionkey: sessionKey })
+    });
+    return response.json();
+}
+            </code></pre>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div class="card">
-        <div class="card-header">JavaScript Example (Fetch API)</div>
-        <div class="card-body">
-          <pre><code class="javascript">
-// SSO Login Redirect
-window.location.href = 'https://sso.iitb.ac.in/project/&lt;project_id&gt;/ssocall/';
-
-// User Data Retrieval
-fetch('/project/getuserdata', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-        sessionkey: 'user_session_key'
-    })
-})
-.then(response => response.json())
-.then(userData => console.log(userData));
-                    </code></pre>
+      <section class="mb-5">
+        <h2 class="h4 mb-3">5. Error Handling</h2>
+        <div class="card bg-light">
+          <div class="card-body">
+            <h3 class="h5">Common Error Responses</h3>
+            <ul>
+              <li><strong>400 Bad Request:</strong> Missing or invalid session key</li>
+              <li><strong>401 Unauthorized:</strong> Invalid or expired session</li>
+              <li><strong>403 Forbidden:</strong> Project not authorized</li>
+              <li><strong>404 Not Found:</strong> Invalid endpoint or project ID</li>
+            </ul>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="mb-5">
-      <h2 class="h4 mb-3">5. Error Handling</h2>
-      <div class="card bg-light">
-        <div class="card-body">
-          <h3 class="h5">Common Error Responses</h3>
-          <ul>
-            <li>
-              <strong>400 Bad Request:</strong> Missing or invalid parameters
-            </li>
-            <li>
-              <strong>401 Unauthorized:</strong> Invalid session or credentials
-            </li>
-            <li><strong>403 Forbidden:</strong> Access denied</li>
-            <li><strong>404 Not Found:</strong> Resource not found</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="h4 mb-3">6. Support</h2>
-      <div class="alert alert-primary">
-        <i class="fas fa-headset me-2"></i>
-        For any integration issues or questions, contact us at
-        <a href="mailto:support@tech-iitb.org" class="alert-link"
-          >support@tech-iitb.org</a
-        >
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </div>
 
@@ -150,11 +177,50 @@ fetch('/project/getuserdata', {
   code {
     font-size: 0.9rem;
   }
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e1e4e8;
+  }
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #24292e;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+  }
+  .github-link:hover {
+    background-color: #2f363d;
+    color: white;
+    text-decoration: none;
+  }
+  .flow-diagram {
+    margin: 2rem 0;
+    text-align: center;
+  }
+  .flow-diagram img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid #e1e4e8;
+  }
+  .diagram-caption {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Syntax highlighting for code blocks
     document.querySelectorAll("pre code").forEach((block) => {
       hljs.highlightBlock(block);
     });
