@@ -84,15 +84,24 @@ class Project(models.Model):
     - description: A short description of the project.
     - logo: An image representing the project (e.g., a logo).
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    name = models.CharField(max_length=100)
-    main_url = models.URLField(blank=True, null=True)
-    redirect_url = models.URLField()
-    description = models.TextField(blank=True, null=True)
-    logo = models.ImageField(upload_to='project_logos/', blank=True, null=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    main_url = models.URLField(null=True, blank=True)
+    redirect_url = models.URLField(null=True, blank=True)
+    logo = models.ImageField(upload_to='project_logos/', null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    is_verified = models.BooleanField(default=False)
+    active_logins = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        return self.name or str(self.id)
+
+    def can_accept_new_login(self):
+        if self.is_verified:
+            return True
+        return self.active_logins < 10
 
     
 class SSOSession(models.Model):

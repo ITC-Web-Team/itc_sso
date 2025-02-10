@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout as auth_logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import Profile, Project, LoginSession, SSOSession
-from .forms import RegistrationForm, LoginForm, EditProfileForm
+from .forms import RegistrationForm, LoginForm, EditProfileForm, ProjectForm
 from .utils import send_verification_email, send_reset_password_email, generate_encrypted_id
 from django.http import JsonResponse
 from rest_framework import status
@@ -48,17 +48,12 @@ def login_view(request):
     Handle user login and update SSO session information.
     """
     next_url = request.GET.get('next', 'home')
-    print(next_url)
-
+    
     if request.user.is_authenticated:
         messages.success(request, f'Welcome, {request.user.username}!')
         return redirect(next_url)
 
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            messages.success(request, f'Welcome, {request.user.username}!')
-            return redirect(next_url)
-        
         try:
             roll = request.POST.get('username')
             password = request.POST.get('password')
@@ -76,8 +71,12 @@ def login_view(request):
                         session_key=session_key,
                         defaults={'device': device, 'active': True}
                     )
+                    
+                    # Get next URL from POST data if available, otherwise from GET parameter
                     next_url = request.POST.get('next', next_url)
+                    
                     messages.success(request, f'Welcome, {user.username}!')
+                    # Use the next_url directly instead of hardcoding 'home'
                     return redirect(next_url)
                 else:
                     messages.error(request, 'Email not verified. Please verify your email to log in.')
@@ -157,12 +156,18 @@ def confirm_email(request, token):
     """
     try:
         profile = Profile.objects.get(verification_token=token)
-        profile.email_verified = True
-        profile.verification_token = ''
-        profile.save()
-        return render(request, 'confirmed.html')
+        if profile:
+            profile.email_verified = True
+            profile.verification_token = ''  # Clear the token after use
+            profile.save()
+            messages.success(request, 'Email verified successfully! You can now login.')
+            return render(request, 'confirmed.html')
     except Profile.DoesNotExist:
+        messages.error(request, 'Invalid verification token.')
         return render(request, 'confirmed.html', {'error': 'Invalid token'})
+    except Exception as e:
+        messages.error(request, f'Verification failed: {str(e)}')
+        return render(request, 'confirmed.html', {'error': f'Verification failed: {str(e)}'})
 
 
 def forgotpassword(request):
@@ -171,9 +176,16 @@ def forgotpassword(request):
     """
     if request.method == 'POST':
         roll = request.POST.get('roll')
-        send_reset_password_email(roll)
-        messages.success(request, 'Password reset email sent. Please check your email.')
-        return redirect('login')
+        try:
+            user = User.objects.get(username=roll)
+            send_reset_password_email(user)
+            messages.success(request, 'Password reset email sent. Please check your email.')
+            return redirect('login')
+        except User.DoesNotExist:
+            messages.error(request, 'No account found with this roll number.')
+        except Exception as e:
+            logger.error(f"Password reset error: {e}")
+            messages.error(request, 'An error occurred while processing your request.')
 
     return render(request, 'forgotpassword.html')
 
@@ -181,19 +193,38 @@ def forgotpassword(request):
 def resetpassword(request, token):
     """
     Allow users to reset their password using the reset token.
+    Handles password validation and updates user password securely.
     """
-    user = Profile.objects.get(reset_token=token)
-    if request.method == 'POST':
-        pass1 = request.POST.get('password1')
-        pass2 = request.POST.get('password2')
-        if pass1 == pass2:
-            user.set_password(pass1)
-            user.save()
-            return redirect('login')
-        else:
-            messages.error(request, 'Passwords do not match.')
+    try:
+        profile = Profile.objects.get(reset_token=token)
+        user = profile.user
         
-    return render(request, 'resetpassword.html')
+        if request.method == 'POST':
+            pass1 = request.POST.get('password1')
+            pass2 = request.POST.get('password2')
+            
+            if pass1 == pass2:
+                if len(pass1) < 8:
+                    messages.error(request, 'Password must be at least 8 characters long.')
+                else:
+                    # Update the user's password
+                    user.set_password(pass1)
+                    user.save()
+                    
+                    # Clear the reset token
+                    profile.reset_token = ''
+                    profile.save()
+                    
+                    messages.success(request, 'Password has been reset successfully. Please login with your new password.')
+                    return redirect('login')
+            else:
+                messages.error(request, 'Passwords do not match.')
+        
+        return render(request, 'resetpassword.html', {'token': token})
+        
+    except Profile.DoesNotExist:
+        messages.error(request, 'Invalid or expired reset token.')
+        return redirect('forgotpassword')
 
 
 # ---------------------------- Profile and User Actions ----------------------------
@@ -218,25 +249,78 @@ def edit_profile(request):
 # ---------------------------- Project and SSO Handling ----------------------------
 
 @login_required
+def add_project(request):
+    """
+    Allow authenticated users to add new projects
+    """
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.owner = request.user
+            project.save()
+            messages.success(request, 'Project added successfully. Waiting for verification.')
+            return redirect('manage_projects')
+    else:
+        form = ProjectForm()
+    
+    return render(request, 'projects/add_project.html', {'form': form})
+
+@login_required
+def manage_projects(request):
+    """
+    Show user's projects and their status
+    """
+    projects = Project.objects.filter(owner=request.user).order_by('-created_at')
+    return render(request, 'projects/manage_projects.html', {'projects': projects})
+
+@login_required
+def project_details(request, project_id):
+    """
+    Show project details and statistics
+    """
+    project = get_object_or_404(Project, id=project_id, owner=request.user)
+    active_sessions = LoginSession.objects.filter(project=project, active=True).count()
+    
+    return render(request, 'projects/project_details.html', {
+        'project': project,
+        'active_sessions': active_sessions,
+        'total_sessions': LoginSession.objects.filter(project=project).count()
+    })
+
+@user_passes_test(lambda u: u.is_staff)
+def verify_project(request, project_id):
+    """
+    Allow admin to verify projects
+    """
+    project = get_object_or_404(Project, id=project_id)
+    project.is_verified = True
+    project.save()
+    messages.success(request, f'Project {project.name} has been verified.')
+    return redirect('admin:accounts_project_changelist')
+
+@login_required(login_url='/login/')
 def project_ssocall(request, id):
-    """
-    Handle SSO (Single Sign-On) login for specific Project.
-    If a valid session exists, the user is redirected to the project URL;
-    otherwise, a new session is created.
-    """
     project = get_object_or_404(Project, id=id)    
     user = request.user
 
-    newid = generate_encrypted_id(user.id, project.id)
+    if not project.can_accept_new_login():
+        messages.error(request, 'This unverified project has reached its maximum login limit (10 active logins).')
+        return redirect('home')
 
+    newid = generate_encrypted_id(user.id, project.id)
     project_url = project.redirect_url
-    if LoginSession.objects.filter(sessionkey = newid).exists():
-        session = LoginSession.objects.get(sessionkey = newid)
+
+    if LoginSession.objects.filter(sessionkey=newid).exists():
+        session = LoginSession.objects.get(sessionkey=newid)
         if session.is_session_valid():
             return redirect(f'{project_url}?accessid={session.sessionkey}')
         else:
             session.delete()
-    session = LoginSession.objects.create(sessionkey = newid, user=user, project=project)
+
+    session = LoginSession.objects.create(sessionkey=newid, user=user, project=project)
+    project.active_logins += 1
+    project.save()
 
     return render(request, 'ssologin.html', {
         'project': project, 
@@ -271,3 +355,12 @@ def return_user_data(request):
         "degree": person.degree,
         "passing_year": person.passing_year
     }, status=200)
+
+@login_required
+def delete_project(request, project_id):
+    if request.method == 'POST':
+        project = get_object_or_404(Project, id=project_id, owner=request.user)
+        project.delete()
+        messages.success(request, 'Project deleted successfully.')
+        return redirect('manage_projects')
+    return redirect('project_details', project_id=project_id)

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.name }} - Project Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Project Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+            <img src="{{ project.logo.url|default:'https://via.placeholder.com/50' }}" 
+                 alt="{{ project.name }}" 
+                 class="me-3"
+                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+            <div>
+                <h1 class="h3 mb-1">{{ project.name }}</h1>
+                <p class="text-muted mb-0">{{ project.description }}</p>
+            </div>
+        </div>
+        {% if not project.is_verified %}
+        <div class="badge bg-warning">
+            <i class="fas fa-clock me-1"></i>Pending Verification
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Implementation Details -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Implementation Details</h5>
+            <button class="btn btn-sm btn-outline-primary" onclick="copyProjectId()">
+                <i class="fas fa-copy me-1"></i>Copy ID
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Project ID</label>
+                <div class="input-group">
+                    <input type="text" class="form-control font-monospace" id="projectId" 
+                           value="{{ project.id }}" readonly>
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyProjectId()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <small class="text-muted">Use this ID to implement SSO in your project</small>
+            </div>
+
+            <div class="mt-4">
+                <h6 class="mb-3">Implementation Example</h6>
+                <div class="bg-light p-3 rounded">
+                    <pre class="mb-0"><code>// SSO Login URL
+GET {{ request.scheme }}://{{ request.get_host }}/project/{{ project.id }}/ssocall/
+
+// Verify User Data
+POST {{ request.scheme }}://{{ request.get_host }}/project/getuserdata
+Content-Type: application/json
+
+{
+    "sessionkey": "your_session_key"}</code></pre>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Note:</strong> Check our <a href="{% url 'docs' %}" class="alert-link">documentation</a> for detailed implementation guides and examples.
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-users me-2 text-primary"></i>Active Sessions
+                    </h5>
+                    <p class="display-6 mb-0">{{ active_sessions }}</p>
+                    <small class="text-muted">Out of {{ total_sessions }} total sessions</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-link me-2 text-primary"></i>Project URLs
+                    </h5>
+                    <div class="mb-2">
+                        <small class="text-muted d-block">Main URL:</small>
+                        <a href="{{ project.main_url }}" target="_blank" class="text-truncate d-block">
+                            {{ project.main_url }}
+                        </a>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Redirect URL:</small>
+                        <span class="text-truncate d-block">{{ project.redirect_url }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle me-2 text-primary"></i>Project Info
+                    </h5>
+                    <div class="mb-2">
+                        <small class="text-muted d-block">Created:</small>
+                        <span>{{ project.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Status:</small>
+                        {% if project.is_verified %}
+                        <span class="badge bg-success">Verified</span>
+                        {% else %}
+                        <span class="badge bg-warning">Pending Verification</span>
+                        <small class="d-block mt-1">
+                            (Limited to 10 active logins)
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Actions -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Project Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-grid">
+                        <a href="{% url 'project_ssocall' project.id %}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Test SSO Login
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-grid">
+                        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteProjectModal">
+                            <i class="fas fa-trash-alt me-2"></i>Delete Project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Project Modal -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong>{{ project.name }}</strong>? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{% url 'delete_project' project.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Project</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function copyProjectId() {
+    const projectId = document.getElementById('projectId');
+    projectId.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const btn = event.target.closest('button');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+    }, 2000);
+}
+</script>
+{% endblock %}
+{% endblock %} 

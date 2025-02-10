@@ -1,18 +1,37 @@
-{% extends 'base.html' %}
-
-{% block title %}Email Confirmed{% endblock %}
-
+{% extends 'base.html' %} {% block title %}Email Confirmed{% endblock title %}
 {% block content %}
 <div class="card">
-    <div class="card-body text-center">
-        {% if error %}
-            <h2 class="card-title mb-4">Verification Failed</h2>
-            <p>{{ error }}</p>
-        {% else %}
-            <h2 class="card-title mb-4">Email Confirmed</h2>
-            <p>Your email has been successfully verified. You can now log in to your account.</p>
-        {% endif %}
-        <a href="{% url 'login' %}" class="btn btn-primary mt-3">Login</a>
+  <div class="card-body text-center">
+    {% if error %}
+    <div class="alert alert-danger">
+      <h2 class="card-title mb-4">Verification Failed</h2>
+      <p>{{ error }}</p>
+      <p class="mt-3">
+        <a href="{% url 'register' %}" class="btn btn-outline-primary"
+          >Register Again</a
+        >
+      </p>
     </div>
+    {% else %}
+    <div class="alert alert-success">
+      <h2 class="card-title mb-4">Email Confirmed</h2>
+      <p>
+        Your email has been successfully verified. You can now log in to your
+        account.
+      </p>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'login' %}" class="btn btn-primary mt-3">
+      {% if error %}Try Login{% else %}Login{% endif %}
+    </a>
+  </div>
 </div>
-{% endblock %}
+
+{% if messages %}
+<div class="mt-3">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %} {% endblock content %}

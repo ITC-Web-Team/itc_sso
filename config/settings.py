@@ -114,12 +114,44 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')  
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  
+# Dynamically load email configurations from environment variables
+EMAIL_CONFIGS = []
+EMAIL_CONFIG_COUNT = int(env('EMAIL_CONFIG_COUNT', default=1))
+
+for i in range(1, EMAIL_CONFIG_COUNT + 1):
+    config = {
+        'EMAIL_HOST': env(f'EMAIL_HOST_{i}', default='smtp.gmail.com'),
+        'EMAIL_PORT': env.int(f'EMAIL_PORT_{i}', default=587),
+        'EMAIL_USE_TLS': env.bool(f'EMAIL_USE_TLS_{i}', default=True),
+        'EMAIL_HOST_USER': env(f'EMAIL_HOST_USER_{i}', default=env('EMAIL_HOST_USER', default='')),
+        'EMAIL_HOST_PASSWORD': env(f'EMAIL_HOST_PASSWORD_{i}', default=env('EMAIL_HOST_PASSWORD', default='')),
+    }
+    
+    # Only add configuration if user and password are provided
+    if config['EMAIL_HOST_USER'] and config['EMAIL_HOST_PASSWORD']:
+        EMAIL_CONFIGS.append(config)
+
+# Fallback to default configuration if no email configs are found
+if not EMAIL_CONFIGS:
+    EMAIL_CONFIGS = [{
+        'EMAIL_HOST': 'smtp.gmail.com',
+        'EMAIL_PORT': 587,
+        'EMAIL_USE_TLS': True,
+        'EMAIL_HOST_USER': '',
+        'EMAIL_HOST_PASSWORD': '',
+    }]
+
+# Default to the first configuration
+EMAIL_HOST = EMAIL_CONFIGS[0]['EMAIL_HOST']
+EMAIL_PORT = EMAIL_CONFIGS[0]['EMAIL_PORT']
+EMAIL_USE_TLS = EMAIL_CONFIGS[0]['EMAIL_USE_TLS']
+EMAIL_HOST_USER = EMAIL_CONFIGS[0]['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = EMAIL_CONFIGS[0]['EMAIL_HOST_PASSWORD']
+
+# Add a check to warn about missing email configuration
+if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
+    import warnings
+    warnings.warn("Email configuration is missing. Email sending will be disabled.", UserWarning)
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 1209600  

@@ -11,6 +11,8 @@ import uuid
 from datetime import datetime
 from .models import LoginSession
 import time
+from .email_utils import send_email
+from django.template.loader import render_to_string
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
@@ -18,52 +20,67 @@ environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 
 def send_verification_email(user):
     """
-    Sends a verification email to the specified user.
-
-    Args:
-        user (User): The user object to whom the verification email will be sent.
-
-    Returns:
-        None
+    Send email verification link to the user
     """
+    # Generate a unique verification token
     token = str(uuid.uuid4())
-    user.profile.verification_token = token
-    user.profile.password = user.password
-    user.profile.save()
-
-    # Use the environment variable for the host URL
-    host_url = env('HOST_URL')  
-    verification_link = reverse('confirm_email', args=[token])
-    full_link = f'{host_url}{verification_link}'
     
-    subject = 'Email Verification'
-    message = f'Click the link to verify your email for registration at ITC SSO: {full_link}'
-
-    send_mail(subject, message, 'from@example.com', [f'{user.username}@iitb.ac.in'])
+    # Update user's profile with the verification token
+    profile = user.profile
+    profile.verification_token = token
+    profile.save()
+    
+    # Construct verification link
+    verification_link = f"https://yourdomain.com{reverse('confirm_email', kwargs={'token': token})}"
+    
+    # Render HTML email template
+    html_message = render_to_string('emails/verification_email.html', {
+        'user': user,
+        'verification_link': verification_link
+    })
+    
+    # Send email
+    subject = 'Verify Your Email - ITC SSO'
+    message = f'Click the following link to verify your email: {verification_link}'
+    
+    return send_email(
+        subject, 
+        message, 
+        [user.email], 
+        html_message=html_message
+    )
 
 def send_reset_password_email(user):
     """
-    Sends a reset password email to the specified user.
-
-    Args:
-        user (User): The user object to whom the reset password email will be sent.
-
-    Returns:
-        None
+    Send password reset link to the user
     """
+    # Generate a unique reset token
     token = str(uuid.uuid4())
-    user.profile.reset_token = token
-    user.profile.save()
-
-    # Use the environment variable for the host URL
-    host_url = env('HOST_URL')  
-    reset_link = reverse('reset_password', args=[token])
-    full_link = f'{host_url}{reset_link}'
     
-    subject = 'Reset Password'
-    message = f'Click the link to reset your password at ITC SSO: {full_link}'
-
-    send_mail(subject, message, 'from@example.com', [f'{user.username}@iitb.ac.in'])
+    # Update user's profile with the reset token
+    profile = user.profile
+    profile.reset_token = token
+    profile.save()
+    
+    # Construct reset link
+    reset_link = f"https://yourdomain.com{reverse('resetpassword', kwargs={'token': token})}"
+    
+    # Render HTML email template
+    html_message = render_to_string('emails/reset_password_email.html', {
+        'user': user,
+        'reset_link': reset_link
+    })
+    
+    # Send email
+    subject = 'Password Reset - ITC SSO'
+    message = f'Click the following link to reset your password: {reset_link}'
+    
+    return send_email(
+        subject, 
+        message, 
+        [user.email], 
+        html_message=html_message
+    )
 
 
 def check_sso_session(request):

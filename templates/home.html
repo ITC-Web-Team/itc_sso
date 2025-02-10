@@ -1,58 +1,152 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home - ITC SSO{% endblock %}
 
 {% block content %}
-
-<h1 class="text-center mb-4">ITC SSO</h1>
-{% if user.is_authenticated %}
-    <h3>Welcome, {{ user.username }}!</h3>
-    
-    {% if sso_sessions %}
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Device</th>
-                    <th>Status</th>
-                    <th>Created</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for session in sso_sessions %}
-                <tr>
-                    <td>
-                        <span title="{{ session.device }}">{{ session.device|truncatechars:40 }}</span> <!-- Shortened device info -->
-                    </td>
-                    <td>
-                        {% if session.active %}
-                            <span class="badge bg-success">Active</span> 
-                        {% else %}
-                            <span class="badge bg-danger">Expired</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <span title="{{ session.created_at|date:"d M Y H:i:s" }}">{{ session.created_at|timesince }} ago</span> <!-- Relative time format -->
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>You have no active or previous SSO sessions.</p>
-    {% endif %}
-
-    <div class="text-center">
-        <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
-    </div>
-    
-{% else %}
-    <div class="text-center">
-        <p class="lead">Please login or register to access <br>( IITB students only )</p>
-        <div class="mt-4">
-            <a href="{% url 'login' %}" class="btn btn-primary me-2">Login</a>
-            <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
+<div class="welcome-section text-center mb-5">
+    {% if user.is_authenticated %}
+        <div class="user-welcome p-4 rounded-3 bg-light mb-4">
+            <div class="d-flex align-items-center justify-content-center mb-3">
+                <div class="avatar-circle me-3">
+                    <span class="initials">{{ user.username|make_list|first|upper }}</span>
+                </div>
+                <h2 class="h3 mb-0">Welcome, {{ user.username }}!</h2>
+            </div>
         </div>
-    </div>
-{% endif %}
 
+        {% if sso_sessions %}
+        <div class="card">
+            <div class="card-header bg-transparent border-0">
+                <h3 class="h5 mb-0">
+                    <i class="fas fa-history me-2"></i>Recent Sessions
+                </h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>
+                                    <i class="fas fa-desktop me-2"></i>Device
+                                </th>
+                                <th>
+                                    <i class="fas fa-circle me-2"></i>Status
+                                </th>
+                                <th>
+                                    <i class="fas fa-clock me-2"></i>Created
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in sso_sessions %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas {% if 'Mobile' in session.device %}fa-mobile-alt{% else %}fa-laptop{% endif %} me-2"></i>
+                                        <span title="{{ session.device }}">{{ session.device|truncatechars:40 }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if session.active %}
+                                        <span class="badge bg-success rounded-pill">
+                                            <i class="fas fa-check me-1"></i>Active
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger rounded-pill">
+                                            <i class="fas fa-times me-1"></i>Expired
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span title="{{ session.created_at|date:'d M Y H:i:s' }}">
+                                        <i class="far fa-clock me-1"></i>
+                                        {{ session.created_at|timesince }} ago
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'logout' %}" class="btn btn-primary">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            You have no active or previous SSO sessions.
+        </div>
+        {% endif %}
+
+    {% else %}
+        <div class="auth-section mt-5">
+            <div class="card">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                        <p class="lead">Please login or register to access<br>
+                            <span class="text-primary">(IITB students only)</span>
+                        </p>
+                    </div>
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .main-container {
+        display: flex;
+        min-height: 100%;
+    }
+    .avatar-circle {
+        width: 50px;
+        height: 50px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .initials {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .table th {
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.75em;
+    }
+
+    .auth-section .card {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .btn-lg {
+        padding: 1rem 2rem;
+    }
+</style>
 {% endblock %}
+
+

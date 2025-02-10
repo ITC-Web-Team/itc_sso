@@ -9,7 +9,14 @@ from .views import (
     project_ssocall, 
     edit_profile, 
     documentation, 
-    return_user_data
+    return_user_data,
+    forgotpassword,
+    resetpassword,
+    add_project,
+    manage_projects,
+    project_details,
+    verify_project,
+    delete_project
 )
 
 # URL patterns for the application
@@ -42,4 +49,25 @@ urlpatterns = [
 
     # API for retrieving user data via SSO session
     path('project/getuserdata', return_user_data, name='return_user_data'),
+
+    # Forgot password
+    path('forgotpassword/', forgotpassword, name='forgotpassword'),
+
+    # Reset password
+    path('resetpassword/<str:token>/', resetpassword, name='resetpassword'),
+
+    # Add project
+    path('projects/add/', add_project, name='add_project'),
+
+    # Manage projects
+    path('projects/manage/', manage_projects, name='manage_projects'),
+
+    # Project details
+    path('projects/<uuid:project_id>/', project_details, name='project_details'),
+
+    # Verify project
+    path('projects/<int:project_id>/verify/', verify_project, name='verify_project'),
+
+    # Delete project
+    path('projects/<uuid:project_id>/delete/', delete_project, name='delete_project'),
 ]

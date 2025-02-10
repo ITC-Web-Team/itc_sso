@@ -1,34 +1,42 @@
-{% extends 'base.html' %}
-
-{% block title %}Login - SSO Application{% endblock %}
-
+{% extends 'base.html' %} {% block title %}Login - SSO Application{% endblock %}
 {% block content %}
 <h2 class="text-center mb-4">Sign In SSO</h2>
 <form method="POST" action="{% url 'login' %}">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="rollNumber" class="form-label">Roll Number</label>
-        <input type="text" class="form-control" id="rollNumber" name="username" required> <!-- Use 'username' here -->
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
-    </div>
-    <button type="submit" class="btn btn-primary w-100">Sign In</button>
-    <div class="text-center mt-3">
-        <a href="">Forgot Password?</a>
-    </div>
-    <div class="text-center mt-3">
-        <a href="{% url 'register' %}">Register</a>
-    </div>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}" />
+  <div class="mb-3">
+    <label for="rollNumber" class="form-label">Roll Number</label>
+    <input
+      type="text"
+      class="form-control"
+      id="rollNumber"
+      name="username"
+      required
+    />
+    <!-- Use 'username' here -->
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password"
+      name="password"
+      required
+    />
+  </div>
+  <button type="submit" class="btn btn-primary w-100">Sign In</button>
+  <div class="text-center mt-3">
+    <a href="{% url 'forgotpassword' %}">Forgot Password?</a>
+  </div>
+  <div class="text-center mt-3">
+    <a href="{% url 'register' %}">Register</a>
+  </div>
 </form>
 
 {% if messages %}
-    <div class="alert alert-warning mt-3">
-        {% for message in messages %}
-            {{ message }}<br>
-        {% endfor %}
-    </div>
-{% endif %}
-
-{% endblock %}
+<div class="alert alert-warning mt-3">
+  {% for message in messages %} {{ message }}<br />
+  {% endfor %}
+</div>
+{% endif %} {% endblock %}
