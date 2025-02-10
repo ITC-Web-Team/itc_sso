@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'rest_framework',
     'gunicorn',
+    'minio_storage',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
 
 
 MEDIA_URL = '/media/'
@@ -157,3 +158,30 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 1209600  
 SESSION_COOKIE_SECURE = True  
 SESSION_COOKIE_HTTPONLY = True 
+
+# Add MinIO storage configuration
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+
+# MinIO configuration
+MINIO_STORAGE_ENDPOINT = env('MINIO_STORAGE_ENDPOINT')  # Should be just the hostname
+MINIO_STORAGE_ACCESS_KEY = env('MINIO_STORAGE_ACCESS_KEY')
+MINIO_STORAGE_SECRET_KEY = env('MINIO_STORAGE_SECRET_KEY')
+MINIO_STORAGE_USE_HTTPS = env.bool('MINIO_STORAGE_USE_HTTPS', default=True)
+MINIO_STORAGE_PORT = env.int('MINIO_STORAGE_PORT', default=443)
+
+# Media files configuration
+MINIO_STORAGE_MEDIA_BUCKET_NAME = env('MINIO_STORAGE_MEDIA_BUCKET_NAME')
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_MEDIA_OBJECT_METADATA = {"Cache-Control": "max-age=1000"}
+
+# Static files configuration
+MINIO_STORAGE_STATIC_BUCKET_NAME = env('MINIO_STORAGE_STATIC_BUCKET_NAME')
+MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+
+# Optional: Set public policies for buckets
+MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = 'READ_WRITE'
+MINIO_STORAGE_AUTO_CREATE_STATIC_POLICY = 'READ_ONLY'
+
+# Storage backends
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"

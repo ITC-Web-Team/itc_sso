@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import uuid
 from django.utils import timezone
 from datetime import timedelta
+from minio_storage.storage import MinioMediaStorage
 
 class Profile(models.Model):
     """
@@ -89,7 +90,7 @@ class Project(models.Model):
     description = models.TextField(null=True, blank=True)
     main_url = models.URLField(null=True, blank=True)
     redirect_url = models.URLField(null=True, blank=True)
-    logo = models.ImageField(upload_to='project_logos/', null=True, blank=True)
+    logo = models.ImageField(upload_to='project_logos/', storage=MinioMediaStorage(), null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     is_verified = models.BooleanField(default=False)
