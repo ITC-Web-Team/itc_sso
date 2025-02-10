@@ -133,7 +133,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ by [DevClub IITD](https://devclub.in)
+Made with ❤️ by [ITC Web Team](https://web.tech-iitb.org)
 
 _Remember: In a world full of passwords, be the SSO provider!_ 🦸‍♂️
 
