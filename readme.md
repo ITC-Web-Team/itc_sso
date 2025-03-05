@@ -24,7 +24,7 @@ A Django-powered Single Sign-On (SSO) service that lets you authenticate once an
 1. Clone this bad boy:
 
    ```bash
-   git clone https://github.com/devclub-iitd/SingleSignOn.git
+   git clone https://github.com/ITC-Web-Team/itc_sso
    cd SingleSignOn
    ```
 
