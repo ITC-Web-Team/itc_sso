@@ -25,17 +25,26 @@ A Django-powered Single Sign-On (SSO) service that lets you authenticate once an
 
    ```bash
    git clone https://github.com/ITC-Web-Team/itc_sso
-   cd SingleSignOn
+   cd accounts
    ```
 
 2. Set up your virtual environment (because isolation is good):
 
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
+3. Activate your virtual environment : 
 
-3. Install dependencies:
+   - On macOS/Linux:
+      ```bash
+      source env/bin/activate
+      ```
+    - On Windows:
+      ```bash
+      .\env\Scripts\activate
+      ```
+
+4. Install dependencies:
 
    ```bash
    pip install -r requirements.txt
@@ -46,6 +55,7 @@ A Django-powered Single Sign-On (SSO) service that lets you authenticate once an
    ```bash
    cp .env.example .env
    # Edit .env with your super secret configurations
+   # Setup your database and add the connection information here in this file
    ```
 
 5. Run migrations:
