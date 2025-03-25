@@ -24,18 +24,27 @@ A Django-powered Single Sign-On (SSO) service that lets you authenticate once an
 1. Clone this bad boy:
 
    ```bash
-   git clone https://github.com/devclub-iitd/SingleSignOn.git
-   cd SingleSignOn
+   git clone https://github.com/ITC-Web-Team/itc_sso
+   cd accounts
    ```
 
 2. Set up your virtual environment (because isolation is good):
 
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
+3. Activate your virtual environment : 
 
-3. Install dependencies:
+   - On macOS/Linux:
+      ```bash
+      source env/bin/activate
+      ```
+    - On Windows:
+      ```bash
+      .\env\Scripts\activate
+      ```
+
+4. Install dependencies:
 
    ```bash
    pip install -r requirements.txt
@@ -46,6 +55,7 @@ A Django-powered Single Sign-On (SSO) service that lets you authenticate once an
    ```bash
    cp .env.example .env
    # Edit .env with your super secret configurations
+   # Setup your database and add the connection information here in this file
    ```
 
 5. Run migrations:
@@ -140,32 +150,72 @@ _Remember: In a world full of passwords, be the SSO provider!_ 🦸‍♂️
 ## Folder Structure
 
 ```bash
-django-sso-app/
+itc_sso
+│   .env.example
+│   .gitignore
+│   manage.py
+│   readme.md
+│   requirements.txt
 │
-├── sso_app/                  # Django app for SSO
-│   ├── migrations/           # Django migration files
-│   ├── templates/            # HTML templates
-│   ├── __init__.py           # Python init file
-│   ├── admin.py              # Django admin configurations
-│   ├── apps.py               # App configuration
-│   ├── forms.py              # Forms for registration, login, etc.
-│   ├── models.py             # Models for user profiles
-│   ├── urls.py               # URL routes
-│   ├── views.py              # Views for handling HTTP requests
+├───accounts
+│   │   .env
+│   │   admin.py
+│   │   apps.py
+│   │   email_utils.py
+│   │   forms.py
+│   │   models.py
+│   │   serializers.py
+│   │   tests.py
+│   │   urls.py
+│   │   utils.py
+│   │   views.py
+│   │
+│   └───management
+│       └───commands
+│               sync_static.py
 │
-├── static/                   # Static assets (CSS, JS)
-├── templates/                # Project-wide templates
+├───config
+│       asgi.py
+│       settings.py
+│       urls.py
+│       wsgi.py
 │
-├── manage.py                 # Django management script
-├── .env                      # Environment variables
-├── .gitignore                # Files and directories to ignore in Git
-├── README.md                 # Project documentation
-├── requirements.txt          # Python dependencies
-├── db.sqlite3                # SQLite database (can be changed)
-└── sso_project/              # Project root directory
-    ├── __init__.py
-    ├── settings.py           # Django settings
-    ├── urls.py               # Root URLs
-    └── wsgi.py               # WSGI entry point
-
+├───static
+│   │   style.css
+│   │
+│   └───img
+│           github.svg
+│           logo.png
+│           sso-flow.png
+│
+└───templates
+    │   base.html
+    │   confirmed.html
+    │   documentation.html
+    │   edit_profile.html
+    │   email_sent.html
+    │   email_verification.html
+    │   email_verification_sent.html
+    │   error.html
+    │   forgetpassword.html
+    │   forgotpassword.html
+    │   home.html
+    │   home_logined.html
+    │   login.html
+    │   password_reset_done.html
+    │   register.html
+    │   registration_success.html
+    │   resetpassword.html
+    │   reset_password.html
+    │   ssocall.html
+    │   ssologin.html
+    │
+    ├───emails
+    │       reset_password_email.html
+    │       verification_email.html
+    │
+    └───projects
+            add_project.html
+            manage_projects.html
+            project_details.html
 ```
