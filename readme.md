@@ -78,29 +78,6 @@ A Django-powered Single Sign-On (SSO) service that lets you authenticate once an
 
 8. Access the application at `http://127.0.0.1:8000`.
 
-## 🔌 Integration
-
-### Client Side
-
-```python
-from sso_client import SSOClient
-
-sso = SSOClient(
-    client_id="your_client_id",
-    client_secret="your_client_secret"
-)
-
-# Magic happens here
-user = sso.authenticate(token)
-```
-
-### Server Side
-
-```python
-@login_required
-def your_protected_view(request):
-    return HttpResponse("If you see this, you're authenticated! 🎉")
-```
 
 ## 🔒 Security Features
 
@@ -108,14 +85,6 @@ def your_protected_view(request):
 - Rate limiting (to keep the bad guys at bay)
 - Session encryption (your secrets are safe with us)
 - CORS protection (because boundaries are important)
-
-## 🌐 API Endpoints
-
-| Endpoint            | Method | Description            |
-| ------------------- | ------ | ---------------------- |
-| `/api/auth/login/`  | POST   | Get your golden ticket |
-| `/api/auth/verify/` | POST   | Make sure you're you   |
-| `/api/user/data/`   | GET    | Get the user details   |
 
 ## 🤝 Contributing
 
@@ -125,9 +94,6 @@ def your_protected_view(request):
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request (let's make this project awesome together!)
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -137,9 +103,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤔 Need Help?
 
-- 📚 Check out our [Documentation](https://sso.devclub.in/docs)
-- 🐞 Found a bug? [Open an issue](https://github.com/devclub-iitd/SingleSignOn/issues)
-- 💬 Want to contribute? Join our [Discord](https://discord.gg/devclub)
+- 📚 Check out our [Documentation](https://sso.tecg-iitb.org/docs)
+- 🐞 Found a bug? [Open an issue](https://github.com/ITC-Web-Team/issues)
 
 ---
 
