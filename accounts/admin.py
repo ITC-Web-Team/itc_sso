@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'roll', 'email_verified')
+    list_display = ('user', 'name', 'department', 'passing_year', 'degree', 'email_verified')
     readonly_fields = ('email_verified', 'verification_token')
 
 class LoginSessionAdmin(admin.ModelAdmin):
@@ -32,7 +32,7 @@ class SSOSessionAdmin(admin.ModelAdmin):
     readonly_fields = ('user', 'session_key', 'active')
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'redirect_url', 'description')  
+    list_display = ('name', 'id', 'redirect_url', 'description')  
 
 
 admin.site.unregister(User)

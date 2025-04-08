@@ -107,8 +107,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
 
+# Use WhiteNoise for serving static files (including admin CSS)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -159,8 +160,15 @@ SESSION_COOKIE_AGE = 1209600
 SESSION_COOKIE_SECURE = True  
 SESSION_COOKIE_HTTPONLY = True 
 
-# Add MinIO storage configuration
+# Storage backends
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+
+# Optional: Set public policies for buckets
+MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = 'READ_WRITE'
+MINIO_STORAGE_AUTO_CREATE_STATIC_POLICY = 'READ_ONLY'
+
+# Remove duplicate setting definitions
+# STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"  # We're using WhiteNoise instead
 
 # MinIO configuration
 MINIO_STORAGE_ENDPOINT = env('MINIO_STORAGE_ENDPOINT')  # Should be just the hostname
@@ -177,11 +185,3 @@ MINIO_STORAGE_MEDIA_OBJECT_METADATA = {"Cache-Control": "max-age=1000"}
 # Static files configuration
 MINIO_STORAGE_STATIC_BUCKET_NAME = env('MINIO_STORAGE_STATIC_BUCKET_NAME')
 MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
-
-# Optional: Set public policies for buckets
-MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = 'READ_WRITE'
-MINIO_STORAGE_AUTO_CREATE_STATIC_POLICY = 'READ_ONLY'
-
-# Storage backends
-DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
-STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
