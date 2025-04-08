@@ -23,7 +23,7 @@ class Profile(models.Model):
     DEPARTMENT_CHOICES = [
         ('AE', 'Aerospace Engineering'),
         ('BB', 'Biosciences and Bioengineering'),
-        ('CE', 'Chemical Engineering'),
+        ('CL', 'Chemical Engineering'),
         ('CH', 'Chemistry'),
         ('CE', 'Civil Engineering'),
         ('CSE', 'Computer Science & Engineering'),
@@ -39,6 +39,7 @@ class Profile(models.Model):
         ('PH', 'Physics'),
         ('IDC', 'Industrial Design Centre'),
         ('SOM', 'Shailesh J. Mehta School of Management'),
+        ('EC', 'Economics'),
         ('Other', 'Other')
     ]
 
@@ -128,10 +129,11 @@ class SSOSession(models.Model):
 
     def is_session_valid(self):
         if timezone.now() <= self.created_at + timedelta(hours=1):
-            self.created_at = timezone.now()
+            return True
         else:
             self.active = False
-        return self.active
+            self.save()
+            return False
     
 class LoginSession(models.Model):
     """
@@ -157,4 +159,32 @@ class LoginSession(models.Model):
         Check if the session is still valid (valid for 1 hour after creation).
         Returns True if the current time is within 1 hour of session creation, otherwise False.
         """
-        return timezone.now() <= self.created_at + timedelta(hours=1)
+        is_valid = timezone.now() <= self.created_at + timedelta(hours=1)
+        if not is_valid and self.active:
+            self.active = False
+            self.save()
+            # Decrement the project's active_logins counter
+            if self.project:
+                self.project.active_logins = max(0, self.project.active_logins - 1)
+                self.project.save()
+        return is_valid
+        
+    def save(self, *args, **kwargs):
+        # If this is a new session being created
+        if not self.pk and self.active:
+            # No need to increment here as it's handled in the view
+            pass
+        # If this is an existing session being deactivated
+        elif self.pk and not self.active:
+            # Get the current state in the database
+            try:
+                original = LoginSession.objects.get(pk=self.pk)
+                # Only decrement if the session was previously active
+                if original.active and not self.active:
+                    # Decrement the project's active_logins counter
+                    if self.project:
+                        self.project.active_logins = max(0, self.project.active_logins - 1)
+                        self.project.save()
+            except LoginSession.DoesNotExist:
+                pass  # This should not happen, but just in case
+        super().save(*args, **kwargs)

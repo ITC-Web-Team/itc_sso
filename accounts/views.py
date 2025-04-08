@@ -102,6 +102,13 @@ def logout_view(request):
                 SSOSession.objects.filter(user=request.user, session_key=session_key).update(active=False)
             else:
                 SSOSession.objects.filter(user=request.user, device=request.META['HTTP_USER_AGENT'][:100]).latest('created_at').update(active=False)
+                
+            # Deactivate all active login sessions for this user
+            # This will trigger the save method which decrements the active_logins counter
+            for session in LoginSession.objects.filter(user=request.user, active=True):
+                session.active = False
+                session.save()
+                
         except SSOSession.DoesNotExist:
             logger.error(f"Session not found for user {request.user.username}")
     
@@ -311,13 +318,28 @@ def project_ssocall(request, id):
     newid = generate_encrypted_id(user.id, project.id)
     project_url = project.redirect_url
 
+    # First clean up any expired sessions for this project
+    for session in LoginSession.objects.filter(project=project, active=True):
+        if not session.is_session_valid():
+            # The is_session_valid method will handle the deactivation and counter decrement
+            pass
+
+    # Update the active_logins count to ensure it's accurate
+    active_count = LoginSession.objects.filter(project=project, active=True).count()
+    if project.active_logins != active_count:
+        project.active_logins = active_count
+        project.save()
+
+    # Check if there's an existing valid session
     if LoginSession.objects.filter(sessionkey=newid).exists():
         session = LoginSession.objects.get(sessionkey=newid)
         if session.is_session_valid():
             return redirect(f'{project_url}?accessid={session.sessionkey}')
         else:
-            session.delete()
+            # Session has expired, it's already been deactivated by is_session_valid
+            session.delete()  # We can delete it now as we'll create a new one
 
+    # Create a new session and increment the counter
     session = LoginSession.objects.create(sessionkey=newid, user=user, project=project)
     project.active_logins += 1
     project.save()
@@ -345,6 +367,7 @@ def return_user_data(request):
         return JsonResponse({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if not session.is_session_valid():
+        # Session has been marked as inactive and counter decremented by is_session_valid
         return JsonResponse({"error": "Session has expired"}, status=status.HTTP_403_FORBIDDEN)
 
     person = Profile.objects.get(user=session.user)
