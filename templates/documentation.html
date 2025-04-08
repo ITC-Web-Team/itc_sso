@@ -47,7 +47,7 @@ Documentation{% endblock %} {% block content %}
               <li>
                 <strong>User Data Retrieval:</strong>
                 <ul>
-                  <li>Client makes POST request to: <code>https://sso.iitb.ac.in/project/getuserdata</code></li>
+                  <li>Client makes POST request to: <code>https://sso.tech-iitb.org/project/getuserdata</code></li>
                   <li>Request body must include the session key</li>
                 </ul>
               </li>
@@ -96,8 +96,8 @@ sso_url = f'https://sso.tech-iitb.org/project/{project_id}/ssocall/'
 # Step 3: Retrieve user data
 def get_user_data(session_key):
     response = requests.post(
-        'https://sso.iitb.ac.in/project/getuserdata',
-        json={'sessionkey': session_key}
+        'https://sso.tech-iitb.org/project/getuserdata',
+        json={'id': session_key}
     )
     return response.json()
 
@@ -135,12 +135,12 @@ async function handleSSORedirect() {
 
 // Step 3: Fetch user data
 async function getUserData(sessionKey) {
-    const response = await fetch('https://sso.iitb.ac.in/project/getuserdata', {
+    const response = await fetch('https://sso.tech-iitb.org/project/getuserdata', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ sessionkey: sessionKey })
+        body: JSON.stringify({ id: sessionKey })
     });
     return response.json();
 }
