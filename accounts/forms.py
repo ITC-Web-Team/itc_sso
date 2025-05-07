@@ -28,25 +28,14 @@ class RegistrationForm(UserCreationForm):
 
     def clean_roll(self):
         roll = self.cleaned_data.get('roll')
-        if User.objects.filter(username=roll).exists():
-            raise forms.ValidationError("A user with that roll number already exists.")
+        if Profile.objects.filter(roll=roll, email_verified=True).exists():
+            raise forms.ValidationError("A user with that roll number already exists and is verified.")
         return roll
 
+
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.username = self.cleaned_data["roll"]
-        if commit:
-            user.save()
-            Profile.objects.create(
-                user=user,
-                roll=self.cleaned_data["roll"],
-                name=self.cleaned_data["name"],
-                department=self.cleaned_data["department"],
-                passing_year=self.cleaned_data["passing_year"],
-                degree=self.cleaned_data["degree"]
-            )
-        return user
-    
+        return super().save(commit=False)
+
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = Profile

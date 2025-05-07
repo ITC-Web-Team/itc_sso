@@ -120,29 +120,51 @@ def logout_view(request):
 
 
 def register(request):
-    """
-    Handle user registration, send a verification email, and
-    redirect to the email_sent page upon successful registration.
-    """
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            roll = form.cleaned_data['roll']
+            roll = form.cleaned_data["roll"]
+            name = form.cleaned_data["name"]
+            dept = form.cleaned_data["department"]
+            year = form.cleaned_data["passing_year"]
+            degree = form.cleaned_data["degree"]
+            password = form.cleaned_data["password1"]
 
-            existing_user = User.objects.filter(username=roll).first()
-            existing_profile = Profile.objects.filter(roll=roll).first()
+            # Check if an unverified user exists
+            user, created = User.objects.get_or_create(username=roll)
 
-            if existing_user and existing_profile and not existing_profile.email_verified:
-                existing_user.delete()
+            if created:
+                user.set_password(password)
+                user.email = f'{roll}@iitb.ac.in'
+                user.save()
 
-            user = form.save()
-            user.email = f'{roll}@iitb.ac.in'  
-            user.save()
+                Profile.objects.create(
+                    user=user,
+                    roll=roll,
+                    name=name,
+                    department=dept,
+                    passing_year=year,
+                    degree=degree
+                )
+            else:
+                profile = Profile.objects.get(user=user)
+                if profile.email_verified:
+                    messages.error(request, "This roll number is already registered and verified.")
+                    return redirect('login')
+
+                # Update user and profile
+                user.set_password(password)
+                user.email = f'{roll}@iitb.ac.in'
+                user.save()
+
+                profile.name = name
+                profile.department = dept
+                profile.passing_year = year
+                profile.degree = degree
+                profile.save()
 
             send_verification_email(user)
-
             messages.success(request, 'Registration successful. Please check your LDAP email to verify your account.')
-
             return redirect('/email-sent' + f'?email={user.email}')
     else:
         form = RegistrationForm()
