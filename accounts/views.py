@@ -20,10 +20,10 @@ logger = logging.getLogger(__name__)
 def home(request):
     """
     Show the homepage. If the user is logged in, display their current and previous SSO sessions,
-    as well as all available Project. If the user is not logged in, show the default homepage.
+    as well as all verified Project. If the user is not logged in, show the default homepage.
     """
 
-    project = Project.objects.all()
+    project = Project.objects.filter(is_verified=True)
 
     if request.user.is_authenticated:
         sso_sessions = SSOSession.objects.filter(user=request.user).order_by('-created_at')[0:5]
