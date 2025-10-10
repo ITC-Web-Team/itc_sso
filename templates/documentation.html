@@ -1,5 +1,55 @@
 {% extends 'base.html' %} {% load static %} {% block title %} Documentation —
 ITC SSO {% endblock %} {% block content %}
+<style>
+  /* Syntax Highlighting for Code Blocks */
+  .code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    border-radius: 12px;
+    padding: 20px;
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    font-family: "SF Mono", Monaco, "Courier New", monospace;
+  }
+
+  .code-keyword {
+    color: #569cd6;
+  } /* Blue for keywords */
+  .code-function {
+    color: #dcdcaa;
+  } /* Yellow for functions */
+  .code-string {
+    color: #ce9178;
+  } /* Orange for strings */
+  .code-comment {
+    color: #6a9955;
+    font-style: italic;
+  } /* Green for comments */
+  .code-number {
+    color: #b5cea8;
+  } /* Light green for numbers */
+  .code-property {
+    color: #9cdcfe;
+  } /* Light blue for properties */
+  .code-operator {
+    color: #d4d4d4;
+  } /* White for operators */
+  .code-class {
+    color: #4ec9b0;
+  } /* Cyan for classes */
+
+  .inline-code {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "SF Mono", Monaco, "Courier New", monospace;
+    color: var(--color-system-blue);
+  }
+</style>
+
 <div class="container" style="max-width: 900px">
   <!-- Header -->
   <div style="text-align: center; margin-bottom: 48px">
@@ -24,10 +74,10 @@ ITC SSO {% endblock %} {% block content %}
       class="text-body"
       style="color: var(--color-gray); max-width: 600px; margin: 0 auto 24px"
     >
-      Learn how to integrate ITC SSO into your applications
+      Integrate ITC SSO into your application in minutes
     </p>
     <a
-      href="https://github.com/ITC-Web-Team/itc_sso"
+      href="https://github.com/DeepakSilaych/itc_sso"
       target="_blank"
       rel="noopener noreferrer"
       class="btn btn-secondary"
@@ -35,6 +85,67 @@ ITC SSO {% endblock %} {% block content %}
       <i class="fab fa-github" style="margin-right: 8px"></i>
       View on GitHub
     </a>
+  </div>
+
+  <!-- Quick Start -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-rocket" style="margin-right: 8px"></i>
+      Quick Start Guide
+    </div>
+    <div class="card-body">
+      <div
+        style="
+          background: var(--color-bg-secondary);
+          border-radius: 12px;
+          padding: 24px;
+        "
+      >
+        <ol style="margin: 0; padding-left: 20px">
+          <li
+            class="text-callout"
+            style="margin-bottom: 12px; color: var(--color-charcoal)"
+          >
+            <strong>Register</strong> your account at
+            <span class="inline-code">sso.tech-iitb.org</span>
+          </li>
+          <li
+            class="text-callout"
+            style="margin-bottom: 12px; color: var(--color-charcoal)"
+          >
+            <strong>Add your project</strong> via "My Projects" dashboard
+          </li>
+          <li
+            class="text-callout"
+            style="margin-bottom: 12px; color: var(--color-charcoal)"
+          >
+            <strong>Configure</strong> your redirect URL
+          </li>
+          <li class="text-callout" style="color: var(--color-charcoal)">
+            <strong>Copy</strong> your Project ID and integrate
+          </li>
+        </ol>
+      </div>
+
+      <div class="alert alert-info" style="margin-top: 20px; margin-bottom: 0">
+        <div style="display: flex; align-items: flex-start; gap: 12px">
+          <i
+            class="fas fa-info-circle"
+            style="font-size: 16px; margin-top: 2px"
+          ></i>
+          <div>
+            <p
+              class="text-callout"
+              style="margin: 0; line-height: 1.6; color: #0056cc"
+            >
+              <strong>Note:</strong> New projects require admin verification.
+              Unverified projects are limited to
+              <strong>10 active logins</strong> for testing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Overview -->
@@ -52,9 +163,9 @@ ITC SSO {% endblock %} {% block content %}
           margin-bottom: 24px;
         "
       >
-        The ITC SSO service provides a secure, centralized authentication system
-        for IITB projects. It enables users to log in once and access multiple
-        applications without re-entering credentials.
+        ITC SSO provides centralized authentication for IITB applications. Users
+        log in once and access multiple apps seamlessly. Perfect for student
+        projects, clubs, and institutional services.
       </p>
 
       <div
@@ -79,7 +190,7 @@ ITC SSO {% endblock %} {% block content %}
           class="text-footnote"
           style="color: var(--color-gray); margin-top: 12px; margin-bottom: 0"
         >
-          SSO Authentication and Data Flow Diagram
+          SSO Authentication and Data Flow
         </p>
       </div>
     </div>
@@ -134,29 +245,17 @@ ITC SSO {% endblock %} {% block content %}
               </div>
               <div>
                 <h4 class="text-headline" style="margin-bottom: 8px">
-                  Initial SSO Request
+                  Redirect to SSO
                 </h4>
-                <ul style="list-style: none; padding: 0; margin: 0">
-                  <li
-                    class="text-callout"
-                    style="color: var(--color-charcoal); margin-bottom: 6px"
-                  >
-                    • Client redirects to:
-                    <code
-                      style="
-                        background: rgba(0, 0, 0, 0.05);
-                        padding: 2px 6px;
-                        border-radius: 4px;
-                        font-size: 14px;
-                      "
-                      >sso.tech-iitb.org/project/&lt;project_id&gt;/ssocall/</code
-                    >
-                  </li>
-                  <li class="text-callout" style="color: var(--color-charcoal)">
-                    • User is taken to the SSO login page if not already
-                    authenticated
-                  </li>
-                </ul>
+                <p
+                  class="text-callout"
+                  style="color: var(--color-charcoal); margin-bottom: 8px"
+                >
+                  Send users to:
+                </p>
+                <code class="inline-code"
+                  >https://sso.tech-iitb.org/project/{PROJECT_ID}/ssocall/</code
+                >
               </div>
             </div>
           </li>
@@ -188,28 +287,11 @@ ITC SSO {% endblock %} {% block content %}
               </div>
               <div>
                 <h4 class="text-headline" style="margin-bottom: 8px">
-                  Authentication Response
+                  User Authenticates
                 </h4>
-                <ul style="list-style: none; padding: 0; margin: 0">
-                  <li
-                    class="text-callout"
-                    style="color: var(--color-charcoal); margin-bottom: 6px"
-                  >
-                    • After successful login, user is redirected to:
-                    <code
-                      style="
-                        background: rgba(0, 0, 0, 0.05);
-                        padding: 2px 6px;
-                        border-radius: 4px;
-                        font-size: 14px;
-                      "
-                      >&lt;client_redirect_url&gt;?accessid=&lt;session_key&gt;</code
-                    >
-                  </li>
-                  <li class="text-callout" style="color: var(--color-charcoal)">
-                    • The session key is unique for each authentication session
-                  </li>
-                </ul>
+                <p class="text-callout" style="color: var(--color-charcoal)">
+                  User logs in (or is already logged in). SSO creates a session.
+                </p>
               </div>
             </div>
           </li>
@@ -241,28 +323,17 @@ ITC SSO {% endblock %} {% block content %}
               </div>
               <div>
                 <h4 class="text-headline" style="margin-bottom: 8px">
-                  User Data Retrieval
+                  Callback with Session Key
                 </h4>
-                <ul style="list-style: none; padding: 0; margin: 0">
-                  <li
-                    class="text-callout"
-                    style="color: var(--color-charcoal); margin-bottom: 6px"
-                  >
-                    • Client makes POST request to:
-                    <code
-                      style="
-                        background: rgba(0, 0, 0, 0.05);
-                        padding: 2px 6px;
-                        border-radius: 4px;
-                        font-size: 14px;
-                      "
-                      >https://sso.tech-iitb.org/project/getuserdata</code
-                    >
-                  </li>
-                  <li class="text-callout" style="color: var(--color-charcoal)">
-                    • Request body must include the session key
-                  </li>
-                </ul>
+                <p
+                  class="text-callout"
+                  style="color: var(--color-charcoal); margin-bottom: 8px"
+                >
+                  User redirected back to your app:
+                </p>
+                <code class="inline-code"
+                  >{YOUR_REDIRECT_URL}?accessid={SESSION_KEY}</code
+                >
               </div>
             </div>
           </li>
@@ -288,20 +359,11 @@ ITC SSO {% endblock %} {% block content %}
               </div>
               <div>
                 <h4 class="text-headline" style="margin-bottom: 8px">
-                  Data Response
+                  Fetch User Data
                 </h4>
-                <ul style="list-style: none; padding: 0; margin: 0">
-                  <li
-                    class="text-callout"
-                    style="color: var(--color-charcoal); margin-bottom: 6px"
-                  >
-                    • SSO returns user profile data in JSON format
-                  </li>
-                  <li class="text-callout" style="color: var(--color-charcoal)">
-                    • Includes: name, roll number, department, degree, and
-                    passing year
-                  </li>
-                </ul>
+                <p class="text-callout" style="color: var(--color-charcoal)">
+                  POST the session key to get user profile information
+                </p>
               </div>
             </div>
           </li>
@@ -314,88 +376,225 @@ ITC SSO {% endblock %} {% block content %}
   <div class="card" style="margin-bottom: 24px">
     <div class="card-header">
       <i class="fas fa-code" style="margin-right: 8px"></i>
-      3. Code Examples
+      3. Implementation Examples
     </div>
     <div class="card-body">
-      <!-- Python Example -->
-      <div style="margin-bottom: 24px">
+      <!-- Python/Django Example -->
+      <div style="margin-bottom: 32px">
         <h4
           class="text-headline"
           style="margin-bottom: 12px; color: var(--color-charcoal)"
         >
-          Python
+          Python / Django
         </h4>
         <pre
-          style="
-            background: var(--color-charcoal);
-            color: #e5e5ea;
-            border-radius: 12px;
-            padding: 20px;
-            overflow-x: auto;
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 0;
-          "
-        ><code>import requests
+          class="code-block"
+        ><code><span class="code-comment"># settings.py or config</span>
+<span class="code-property">PROJECT_ID</span> = <span class="code-string">'your-project-uuid-here'</span>
 
-# Step 1: Redirect user to SSO
-sso_url = f'https://sso.tech-iitb.org/project/{project_id}/ssocall/'
+<span class="code-comment"># Step 1: Redirect to SSO</span>
+<span class="code-keyword">from</span> django.shortcuts <span class="code-keyword">import</span> redirect
 
-# Step 2: Handle the redirect with session key
-def get_user_data(session_key):
-    response = requests.post(
-        'https://sso.tech-iitb.org/project/getuserdata',
-        json={'id': session_key}
+<span class="code-keyword">def</span> <span class="code-function">sso_login</span>(request):
+    sso_url = <span class="code-string">f'https://sso.tech-iitb.org/project/{<span class="code-property">PROJECT_ID</span>}/ssocall/'</span>
+    <span class="code-keyword">return</span> <span class="code-function">redirect</span>(sso_url)
+
+<span class="code-comment"># Step 2: Handle callback</span>
+<span class="code-keyword">def</span> <span class="code-function">sso_callback</span>(request):
+    session_key = request.GET.<span class="code-function">get</span>(<span class="code-string">'accessid'</span>)
+    
+    <span class="code-keyword">if</span> <span class="code-keyword">not</span> session_key:
+        <span class="code-keyword">return</span> <span class="code-function">redirect</span>(<span class="code-string">'error'</span>)
+    
+    <span class="code-comment"># Fetch user data</span>
+    user_data = <span class="code-function">get_user_data</span>(session_key)
+    request.session[<span class="code-string">'user_data'</span>] = user_data
+    <span class="code-keyword">return</span> <span class="code-function">redirect</span>(<span class="code-string">'dashboard'</span>)
+
+<span class="code-comment"># Step 3: Get user data</span>
+<span class="code-keyword">import</span> requests
+
+<span class="code-keyword">def</span> <span class="code-function">get_user_data</span>(session_key):
+    response = requests.<span class="code-function">post</span>(
+        <span class="code-string">'https://sso.tech-iitb.org/project/getuserdata'</span>,
+        json={<span class="code-string">'id'</span>: session_key}
     )
-    return response.json()
+    <span class="code-keyword">return</span> response.<span class="code-function">json</span>()
 
-# Response format:
-# {
-#     "name": "User Name",
-#     "roll": "123456789",
-#     "department": "Computer Science",
-#     "degree": "BTech",
-#     "passing_year": "2024"
-# }</code></pre>
+<span class="code-comment"># Returns: {</span>
+<span class="code-comment">#   "name": "John Doe",</span>
+<span class="code-comment">#   "roll": "210050001",</span>
+<span class="code-comment">#   "department": "Computer Science & Engineering",</span>
+<span class="code-comment">#   "degree": "B.Tech",</span>
+<span class="code-comment">#   "passing_year": 2024</span>
+<span class="code-comment"># }</span></code></pre>
       </div>
 
-      <!-- JavaScript Example -->
+      <!-- JavaScript/React Example -->
+      <div style="margin-bottom: 32px">
+        <h4
+          class="text-headline"
+          style="margin-bottom: 12px; color: var(--color-charcoal)"
+        >
+          JavaScript / React
+        </h4>
+        <pre
+          class="code-block"
+        ><code><span class="code-comment">// config.js</span>
+<span class="code-keyword">const</span> <span class="code-property">PROJECT_ID</span> = <span class="code-string">'your-project-uuid-here'</span>;
+
+<span class="code-comment">// Step 1: Redirect to SSO</span>
+<span class="code-keyword">function</span> <span class="code-function">redirectToSSO</span>() {
+    window.location.href = 
+        <span class="code-string">`https://sso.tech-iitb.org/project/${<span class="code-property">PROJECT_ID</span>}/ssocall/`</span>;
+}
+
+<span class="code-comment">// Step 2: Handle callback in your redirect page</span>
+<span class="code-keyword">async function</span> <span class="code-function">handleSSOCallback</span>() {
+    <span class="code-keyword">const</span> urlParams = <span class="code-keyword">new</span> <span class="code-class">URLSearchParams</span>(window.location.search);
+    <span class="code-keyword">const</span> sessionKey = urlParams.<span class="code-function">get</span>(<span class="code-string">'accessid'</span>);
+    
+    <span class="code-keyword">if</span> (!sessionKey) {
+        console.<span class="code-function">error</span>(<span class="code-string">'No session key'</span>);
+        <span class="code-keyword">return</span>;
+    }
+    
+    <span class="code-comment">// Fetch user data</span>
+    <span class="code-keyword">const</span> userData = <span class="code-keyword">await</span> <span class="code-function">getUserData</span>(sessionKey);
+    <span class="code-comment">// Store in state/localStorage</span>
+    localStorage.<span class="code-function">setItem</span>(<span class="code-string">'user'</span>, JSON.<span class="code-function">stringify</span>(userData));
+}
+
+<span class="code-comment">// Step 3: API call to get user data</span>
+<span class="code-keyword">async function</span> <span class="code-function">getUserData</span>(sessionKey) {
+    <span class="code-keyword">const</span> response = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(
+        <span class="code-string">'https://sso.tech-iitb.org/project/getuserdata'</span>,
+        {
+            method: <span class="code-string">'POST'</span>,
+            headers: { <span class="code-string">'Content-Type'</span>: <span class="code-string">'application/json'</span> },
+            body: JSON.<span class="code-function">stringify</span>({ id: sessionKey })
+        }
+    );
+    <span class="code-keyword">return</span> response.<span class="code-function">json</span>();
+}</code></pre>
+      </div>
+
+      <!-- Node.js/Express Example -->
       <div>
         <h4
           class="text-headline"
           style="margin-bottom: 12px; color: var(--color-charcoal)"
         >
-          JavaScript
+          Node.js / Express
         </h4>
         <pre
-          style="
-            background: var(--color-charcoal);
-            color: #e5e5ea;
-            border-radius: 12px;
-            padding: 20px;
-            overflow-x: auto;
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 0;
-          "
-        ><code>// Step 1: Redirect to SSO
-function redirectToSSO(projectId) {
-    window.location.href = 
-        `https://sso.tech-iitb.org/project/${projectId}/ssocall/`;
-}
+          class="code-block"
+        ><code><span class="code-keyword">const</span> axios = <span class="code-function">require</span>(<span class="code-string">'axios'</span>);
 
-// Step 2: Get user data
-async function getUserData(sessionKey) {
-    const response = await fetch(
-        'https://sso.tech-iitb.org/project/getuserdata',
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: sessionKey })
-        }
+<span class="code-keyword">const</span> <span class="code-property">PROJECT_ID</span> = <span class="code-string">'your-project-uuid-here'</span>;
+
+<span class="code-comment">// Step 1: Redirect to SSO</span>
+app.<span class="code-function">get</span>(<span class="code-string">'/login'</span>, (req, res) => {
+    <span class="code-keyword">const</span> ssoUrl = <span class="code-string">`https://sso.tech-iitb.org/project/${<span class="code-property">PROJECT_ID</span>}/ssocall/`</span>;
+    res.<span class="code-function">redirect</span>(ssoUrl);
+});
+
+<span class="code-comment">// Step 2: Handle callback</span>
+app.<span class="code-function">get</span>(<span class="code-string">'/auth/callback'</span>, <span class="code-keyword">async</span> (req, res) => {
+    <span class="code-keyword">const</span> sessionKey = req.query.accessid;
+    
+    <span class="code-keyword">if</span> (!sessionKey) {
+        <span class="code-keyword">return</span> res.<span class="code-function">redirect</span>(<span class="code-string">'/error'</span>);
+    }
+    
+    <span class="code-keyword">try</span> {
+        <span class="code-keyword">const</span> userData = <span class="code-keyword">await</span> <span class="code-function">getUserData</span>(sessionKey);
+        req.session.userData = userData;
+        res.<span class="code-function">redirect</span>(<span class="code-string">'/dashboard'</span>);
+    } <span class="code-keyword">catch</span> (error) {
+        console.<span class="code-function">error</span>(<span class="code-string">'SSO Error:'</span>, error);
+        res.<span class="code-function">redirect</span>(<span class="code-string">'/error'</span>);
+    }
+});
+
+<span class="code-comment">// Step 3: Fetch user data</span>
+<span class="code-keyword">async function</span> <span class="code-function">getUserData</span>(sessionKey) {
+    <span class="code-keyword">const</span> response = <span class="code-keyword">await</span> axios.<span class="code-function">post</span>(
+        <span class="code-string">'https://sso.tech-iitb.org/project/getuserdata'</span>,
+        { id: sessionKey }
     );
-    return response.json();
+    <span class="code-keyword">return</span> response.data;
 }</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Response -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-database" style="margin-right: 8px"></i>
+      4. User Data Response
+    </div>
+    <div class="card-body">
+      <p
+        class="text-callout"
+        style="color: var(--color-charcoal); margin-bottom: 16px"
+      >
+        Successful authentication returns:
+      </p>
+      <pre class="code-block"><code>{
+    <span class="code-string">"name"</span>: <span class="code-string">"John Doe"</span>,
+    <span class="code-string">"roll"</span>: <span class="code-string">"210050001"</span>,
+    <span class="code-string">"department"</span>: <span class="code-string">"Computer Science & Engineering"</span>,
+    <span class="code-string">"degree"</span>: <span class="code-string">"B.Tech"</span>,
+    <span class="code-string">"passing_year"</span>: <span class="code-number">2024</span>
+}</code></pre>
+
+      <div
+        style="
+          margin-top: 20px;
+          padding: 16px;
+          background: var(--color-bg-secondary);
+          border-radius: 8px;
+        "
+      >
+        <h5 class="text-subhead" style="font-weight: 600; margin-bottom: 12px">
+          Field Descriptions:
+        </h5>
+        <div style="display: grid; gap: 8px">
+          <div style="display: flex; gap: 8px">
+            <code class="inline-code" style="min-width: 140px">name</code>
+            <span class="text-callout" style="color: var(--color-gray)"
+              >Full name of the user</span
+            >
+          </div>
+          <div style="display: flex; gap: 8px">
+            <code class="inline-code" style="min-width: 140px">roll</code>
+            <span class="text-callout" style="color: var(--color-gray)"
+              >Unique IITB roll number</span
+            >
+          </div>
+          <div style="display: flex; gap: 8px">
+            <code class="inline-code" style="min-width: 140px">department</code>
+            <span class="text-callout" style="color: var(--color-gray)"
+              >Academic department/branch</span
+            >
+          </div>
+          <div style="display: flex; gap: 8px">
+            <code class="inline-code" style="min-width: 140px">degree</code>
+            <span class="text-callout" style="color: var(--color-gray)"
+              >B.Tech, M.Tech, PhD, etc.</span
+            >
+          </div>
+          <div style="display: flex; gap: 8px">
+            <code class="inline-code" style="min-width: 140px"
+              >passing_year</code
+            >
+            <span class="text-callout" style="color: var(--color-gray)"
+              >Expected graduation year</span
+            >
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -404,9 +603,15 @@ async function getUserData(sessionKey) {
   <div class="card" style="margin-bottom: 24px">
     <div class="card-header">
       <i class="fas fa-exclamation-triangle" style="margin-right: 8px"></i>
-      4. Error Handling
+      5. Error Handling
     </div>
     <div class="card-body">
+      <p
+        class="text-callout"
+        style="color: var(--color-charcoal); margin-bottom: 16px"
+      >
+        Handle these HTTP status codes in your application:
+      </p>
       <div style="display: grid; gap: 12px">
         <div
           style="
@@ -426,29 +631,7 @@ async function getUserData(sessionKey) {
               Bad Request
             </h5>
             <p class="text-callout" style="color: var(--color-gray); margin: 0">
-              Missing or invalid session key
-            </p>
-          </div>
-        </div>
-        <div
-          style="
-            display: flex;
-            gap: 12px;
-            padding: 16px;
-            background: var(--color-bg-secondary);
-            border-radius: 8px;
-          "
-        >
-          <span class="badge bg-danger" style="height: fit-content">401</span>
-          <div>
-            <h5
-              class="text-subhead"
-              style="font-weight: 600; margin-bottom: 4px"
-            >
-              Unauthorized
-            </h5>
-            <p class="text-callout" style="color: var(--color-gray); margin: 0">
-              Invalid or expired session
+              Missing or invalid session key in request
             </p>
           </div>
         </div>
@@ -470,7 +653,7 @@ async function getUserData(sessionKey) {
               Forbidden
             </h5>
             <p class="text-callout" style="color: var(--color-gray); margin: 0">
-              Project not authorized
+              Session has expired (valid for 1 hour)
             </p>
           </div>
         </div>
@@ -492,7 +675,7 @@ async function getUserData(sessionKey) {
               Not Found
             </h5>
             <p class="text-callout" style="color: var(--color-gray); margin: 0">
-              Invalid endpoint or project ID
+              Invalid session key or project ID
             </p>
           </div>
         </div>
@@ -500,70 +683,623 @@ async function getUserData(sessionKey) {
     </div>
   </div>
 
-  <!-- File Storage -->
-  <div class="card" style="margin-bottom: 40px">
+  <!-- Best Practices -->
+  <div class="card" style="margin-bottom: 24px">
     <div class="card-header">
-      <i class="fas fa-database" style="margin-right: 8px"></i>
-      5. File Storage
+      <i class="fas fa-star" style="margin-right: 8px"></i>
+      6. Best Practices
     </div>
     <div class="card-body">
-      <p
-        class="text-body"
+      <div style="display: grid; gap: 16px">
+        <div
+          style="
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <div style="display: flex; align-items: flex-start; gap: 12px">
+            <div
+              style="
+                width: 32px;
+                height: 32px;
+                background: rgba(52, 199, 89, 0.2);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              "
+            >
+              <i
+                class="fas fa-lock"
+                style="color: var(--color-system-green); font-size: 14px"
+              ></i>
+            </div>
+            <div>
+              <h5
+                class="text-subhead"
+                style="
+                  font-weight: 600;
+                  margin-bottom: 6px;
+                  color: var(--color-black);
+                "
+              >
+                Secure Storage
+              </h5>
+              <p
+                class="text-callout"
+                style="
+                  color: var(--color-charcoal);
+                  margin: 0;
+                  line-height: 1.5;
+                "
+              >
+                Store session keys in server-side sessions or httpOnly cookies.
+                Never expose in client-side JavaScript or localStorage.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <div style="display: flex; align-items: flex-start; gap: 12px">
+            <div
+              style="
+                width: 32px;
+                height: 32px;
+                background: rgba(0, 122, 255, 0.2);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              "
+            >
+              <i
+                class="fas fa-sync-alt"
+                style="color: var(--color-system-blue); font-size: 14px"
+              ></i>
+            </div>
+            <div>
+              <h5
+                class="text-subhead"
+                style="
+                  font-weight: 600;
+                  margin-bottom: 6px;
+                  color: var(--color-black);
+                "
+              >
+                Validate Sessions
+              </h5>
+              <p
+                class="text-callout"
+                style="
+                  color: var(--color-charcoal);
+                  margin: 0;
+                  line-height: 1.5;
+                "
+              >
+                Sessions expire after 1 hour. Always validate before granting
+                access to protected resources.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <div style="display: flex; align-items: flex-start; gap: 12px">
+            <div
+              style="
+                width: 32px;
+                height: 32px;
+                background: rgba(255, 149, 0, 0.2);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              "
+            >
+              <i
+                class="fas fa-bug"
+                style="color: var(--color-system-orange); font-size: 14px"
+              ></i>
+            </div>
+            <div>
+              <h5
+                class="text-subhead"
+                style="
+                  font-weight: 600;
+                  margin-bottom: 6px;
+                  color: var(--color-black);
+                "
+              >
+                Error Handling
+              </h5>
+              <p
+                class="text-callout"
+                style="
+                  color: var(--color-charcoal);
+                  margin: 0;
+                  line-height: 1.5;
+                "
+              >
+                Handle network failures, expired sessions, and invalid responses
+                gracefully with clear user feedback.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <div style="display: flex; align-items: flex-start; gap: 12px">
+            <div
+              style="
+                width: 32px;
+                height: 32px;
+                background: rgba(175, 82, 222, 0.2);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              "
+            >
+              <i
+                class="fas fa-tachometer-alt"
+                style="color: var(--color-system-purple); font-size: 14px"
+              ></i>
+            </div>
+            <div>
+              <h5
+                class="text-subhead"
+                style="
+                  font-weight: 600;
+                  margin-bottom: 6px;
+                  color: var(--color-black);
+                "
+              >
+                Cache Data
+              </h5>
+              <p
+                class="text-callout"
+                style="
+                  color: var(--color-charcoal);
+                  margin: 0;
+                  line-height: 1.5;
+                "
+              >
+                Cache user data after fetching to reduce API calls. Refresh only
+                when necessary.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Reference -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-plug" style="margin-right: 8px"></i>
+      7. API Reference
+    </div>
+    <div class="card-body">
+      <!-- SSO Login Endpoint -->
+      <div
         style="
-          color: var(--color-charcoal);
-          line-height: 1.6;
-          margin-bottom: 16px;
+          margin-bottom: 24px;
+          padding: 20px;
+          background: var(--color-bg-secondary);
+          border-radius: 12px;
         "
       >
-        All media files are stored securely using MinIO object storage:
-      </p>
-      <ul style="list-style: none; padding: 0; margin: 0">
-        <li
+        <div
           style="
             display: flex;
+            align-items: center;
             gap: 12px;
+            margin-bottom: 12px;
+          "
+        >
+          <span
+            class="badge bg-success"
+            style="font-size: 11px; padding: 4px 10px"
+            >GET</span
+          >
+          <code class="inline-code">/project/{project_id}/ssocall/</code>
+        </div>
+        <p
+          class="text-callout"
+          style="color: var(--color-charcoal); margin: 0; line-height: 1.5"
+        >
+          Initiates SSO authentication. Redirects to login if needed, then to
+          your callback URL with session key.
+        </p>
+      </div>
+
+      <!-- Get User Data Endpoint -->
+      <div
+        style="
+          padding: 20px;
+          background: var(--color-bg-secondary);
+          border-radius: 12px;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+          "
+        >
+          <span
+            class="badge"
+            style="
+              background: var(--color-system-orange);
+              color: white;
+              font-size: 11px;
+              padding: 4px 10px;
+            "
+            >POST</span
+          >
+          <code class="inline-code">/project/getuserdata</code>
+        </div>
+        <p
+          class="text-callout"
+          style="
+            color: var(--color-charcoal);
+            margin-bottom: 16px;
+            line-height: 1.5;
+          "
+        >
+          Retrieves authenticated user profile data.
+        </p>
+
+        <div style="margin-bottom: 12px">
+          <p
+            class="text-caption"
+            style="
+              color: var(--color-gray);
+              margin-bottom: 8px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            "
+          >
+            Request Body:
+          </p>
+          <pre class="code-block" style="padding: 12px; font-size: 13px"><code>{
+    <span class="code-string">"id"</span>: <span class="code-string">"session_key_from_redirect"</span>
+}</code></pre>
+        </div>
+
+        <div>
+          <p
+            class="text-caption"
+            style="
+              color: var(--color-gray);
+              margin-bottom: 8px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            "
+          >
+            Response (200 OK):
+          </p>
+          <pre class="code-block" style="padding: 12px; font-size: 13px"><code>{
+    <span class="code-string">"name"</span>: <span class="code-string">"John Doe"</span>,
+    <span class="code-string">"roll"</span>: <span class="code-string">"210050001"</span>,
+    <span class="code-string">"department"</span>: <span class="code-string">"CSE"</span>,
+    <span class="code-string">"degree"</span>: <span class="code-string">"B.Tech"</span>,
+    <span class="code-string">"passing_year"</span>: <span class="code-number">2024</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Management -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-clock" style="margin-right: 8px"></i>
+      8. Session Management
+    </div>
+    <div class="card-body">
+      <div style="display: grid; gap: 12px">
+        <div
+          style="
             padding: 12px;
             background: var(--color-bg-secondary);
             border-radius: 8px;
-            margin-bottom: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
           "
         >
           <i
-            class="fas fa-folder"
-            style="color: var(--color-system-blue); margin-top: 2px"
+            class="fas fa-hourglass-half"
+            style="color: var(--color-system-blue); font-size: 16px"
           ></i>
           <div>
             <strong class="text-subhead" style="font-weight: 600"
-              >Media Files:</strong
+              >Expiration:</strong
             >
             <span class="text-callout" style="color: var(--color-charcoal)">
-              Stored in the media bucket with appropriate access controls</span
+              Sessions are valid for <strong>1 hour</strong></span
             >
           </div>
-        </li>
-        <li
+        </div>
+        <div
           style="
-            display: flex;
-            gap: 12px;
             padding: 12px;
             background: var(--color-bg-secondary);
             border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
           "
         >
           <i
-            class="fas fa-folder"
-            style="color: var(--color-system-blue); margin-top: 2px"
+            class="fas fa-key"
+            style="color: var(--color-system-blue); font-size: 16px"
           ></i>
           <div>
             <strong class="text-subhead" style="font-weight: 600"
-              >Static Files:</strong
+              >Uniqueness:</strong
             >
             <span class="text-callout" style="color: var(--color-charcoal)">
-              Served from a dedicated static bucket</span
+              Each auth creates a unique session key</span
             >
           </div>
+        </div>
+        <div
+          style="
+            padding: 12px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+          "
+        >
+          <i
+            class="fas fa-shield-alt"
+            style="color: var(--color-system-green); font-size: 16px"
+          ></i>
+          <div>
+            <strong class="text-subhead" style="font-weight: 600"
+              >Security:</strong
+            >
+            <span class="text-callout" style="color: var(--color-charcoal)">
+              Keys are encrypted and single-use</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testing Your Integration -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-flask" style="margin-right: 8px"></i>
+      9. Testing Your Integration
+    </div>
+    <div class="card-body">
+      <ol style="margin: 0; padding-left: 20px">
+        <li
+          class="text-callout"
+          style="
+            margin-bottom: 12px;
+            color: var(--color-charcoal);
+            line-height: 1.6;
+          "
+        >
+          Add your project in the "My Projects" section
         </li>
-      </ul>
+        <li
+          class="text-callout"
+          style="
+            margin-bottom: 12px;
+            color: var(--color-charcoal);
+            line-height: 1.6;
+          "
+        >
+          Use the "Test SSO Login" button in project details
+        </li>
+        <li
+          class="text-callout"
+          style="
+            margin-bottom: 12px;
+            color: var(--color-charcoal);
+            line-height: 1.6;
+          "
+        >
+          Verify your app receives the
+          <code class="inline-code">accessid</code> parameter
+        </li>
+        <li
+          class="text-callout"
+          style="color: var(--color-charcoal); line-height: 1.6"
+        >
+          Test the user data fetch and session validation
+        </li>
+      </ol>
+
+      <div
+        class="alert alert-warning"
+        style="margin-top: 20px; margin-bottom: 0"
+      >
+        <div style="display: flex; align-items: flex-start; gap: 12px">
+          <i
+            class="fas fa-lightbulb"
+            style="font-size: 16px; margin-top: 2px"
+          ></i>
+          <div>
+            <p
+              class="text-callout"
+              style="margin: 0; line-height: 1.6; color: #cc7a00"
+            >
+              <strong>Testing Tip:</strong> Unverified projects can have up to
+              10 active test logins. Request verification for production use.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Support -->
+  <div class="card" style="margin-bottom: 40px">
+    <div class="card-header">
+      <i class="fas fa-question-circle" style="margin-right: 8px"></i>
+      10. Support & Resources
+    </div>
+    <div class="card-body">
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 16px;
+        "
+      >
+        <a
+          href="https://github.com/DeepakSilaych/itc_sso"
+          target="_blank"
+          style="text-decoration: none"
+        >
+          <div
+            style="
+              padding: 20px;
+              background: var(--color-bg-secondary);
+              border-radius: 12px;
+              transition: all 0.2s var(--ease-out);
+              cursor: pointer;
+            "
+          >
+            <i
+              class="fab fa-github"
+              style="
+                font-size: 24px;
+                color: var(--color-black);
+                margin-bottom: 12px;
+                display: block;
+              "
+            ></i>
+            <h5
+              class="text-subhead"
+              style="
+                font-weight: 600;
+                margin-bottom: 6px;
+                color: var(--color-black);
+              "
+            >
+              GitHub Repository
+            </h5>
+            <p
+              class="text-footnote"
+              style="color: var(--color-gray); margin: 0"
+            >
+              Source code, issues, and contributions
+            </p>
+          </div>
+        </a>
+
+        <a
+          href="https://web.tech-iitb.org"
+          target="_blank"
+          style="text-decoration: none"
+        >
+          <div
+            style="
+              padding: 20px;
+              background: var(--color-bg-secondary);
+              border-radius: 12px;
+              transition: all 0.2s var(--ease-out);
+              cursor: pointer;
+            "
+          >
+            <i
+              class="fas fa-users"
+              style="
+                font-size: 24px;
+                color: var(--color-system-blue);
+                margin-bottom: 12px;
+                display: block;
+              "
+            ></i>
+            <h5
+              class="text-subhead"
+              style="
+                font-weight: 600;
+                margin-bottom: 6px;
+                color: var(--color-black);
+              "
+            >
+              ITC Web Team
+            </h5>
+            <p
+              class="text-footnote"
+              style="color: var(--color-gray); margin: 0"
+            >
+              Contact for support and assistance
+            </p>
+          </div>
+        </a>
+
+        <div
+          style="
+            padding: 20px;
+            background: var(--color-bg-secondary);
+            border-radius: 12px;
+          "
+        >
+          <i
+            class="fas fa-book-open"
+            style="
+              font-size: 24px;
+              color: var(--color-system-green);
+              margin-bottom: 12px;
+              display: block;
+            "
+          ></i>
+          <h5
+            class="text-subhead"
+            style="
+              font-weight: 600;
+              margin-bottom: 6px;
+              color: var(--color-black);
+            "
+          >
+            Examples
+          </h5>
+          <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+            Check sample implementations above
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
