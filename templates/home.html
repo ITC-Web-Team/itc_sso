@@ -1,6 +1,10 @@
-{% extends 'base.html' %} 
-{% block title %} Home — ITC SSO {% endblock %} 
-{%block content %}
+{% extends 'base.html' %}
+
+{% block title %}
+Home — ITC SSO
+{% endblock %}
+
+{% block content %}
 <div class="welcome-section">
   {% if user.is_authenticated %}
   <!-- User Welcome Card -->
