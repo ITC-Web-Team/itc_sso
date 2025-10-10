@@ -10,7 +10,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         # Only include the fields that should be exposed in the API
-        fields = ['id', 'user', 'roll', 'name', 'branch', 'passing_year', 'course', 'email_verified']
+        fields = ['id', 'user', 'roll', 'name', 'department', 'passing_year', 'degree', 'email_verified']
         read_only_fields = ['email_verified']  # Make email_verified read-only
 
     def to_representation(self, instance):

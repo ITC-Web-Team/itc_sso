@@ -66,7 +66,7 @@ urlpatterns = [
     path('projects/<uuid:project_id>/', project_details, name='project_details'),
 
     # Verify project
-    path('projects/<int:project_id>/verify/', verify_project, name='verify_project'),
+    path('projects/<uuid:project_id>/verify/', verify_project, name='verify_project'),
 
     # Delete project
     path('projects/<uuid:project_id>/delete/', delete_project, name='delete_project'),
