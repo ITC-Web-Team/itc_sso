@@ -1,25 +1,62 @@
-{% extends 'base.html' %}
-
-{% block title %}Edit Profile{% endblock %}
-
-{% block header %}Update Your Profile{% endblock %}
-
-{% block content %}
-<form method="post" class="needs-validation" novalidate>
-    {% csrf_token %}
-    {% for field in form %}
-        <div class="mb-3">
-            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-            {{ field|add_class:"form-control" }}
-            {% if field.errors %}
-                <div class="invalid-feedback d-block">
-                    {{ field.errors.0 }}
-                </div>
-            {% endif %}
-        </div>
-    {% endfor %}
-    <div class="d-grid">
-        <button type="submit" class="btn btn-primary">Update Profile</button>
+{% extends 'base.html' %} {% block title %} Edit Profile — ITC SSO {% endblock
+%} {% block content %}
+<div
+  class="container"
+  style="max-width: 640px; margin-top: 40px; margin-bottom: 60px"
+>
+  <div class="card">
+    <div class="card-header">
+      <i class="fas fa-user-edit" style="margin-right: 8px"></i>
+      Edit Profile
     </div>
-</form>
+    <div class="card-body" style="padding: 32px">
+      <!-- Messages -->
+      {% if messages %}
+      <div style="margin-bottom: 24px">
+        {% for message in messages %}
+        <div
+          class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Form -->
+      <form method="POST">
+        {% csrf_token %} {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">
+            {{ field.label }}
+          </label>
+          {{ field }} {% if field.errors %}
+          <div
+            style="
+              margin-top: 8px;
+              padding: 12px;
+              background: rgba(255, 59, 48, 0.1);
+              border-radius: 8px;
+            "
+          >
+            <small class="text-footnote" style="color: var(--color-system-red)">
+              {{ field.errors.0 }}
+            </small>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        <div style="display: flex; gap: 12px; margin-top: 32px">
+          <button type="submit" class="btn btn-primary" style="flex: 1">
+            Save Changes
+          </button>
+          <a href="{% url 'home' %}" class="btn btn-secondary" style="flex: 1">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

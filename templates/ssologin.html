@@ -1,83 +1,144 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %} SSO Login — {{ project.name }} {%
+endblock %} {% block content %}
+<div
+  class="container"
+  style="max-width: 540px; margin-top: 80px; text-align: center"
+>
+  <div class="card">
+    <div class="card-body" style="padding: 60px 40px">
+      <!-- Project Logo -->
+      {% if project.logo %}
+      <img
+        src="{{ project.logo.url }}"
+        alt="{{ project.name }}"
+        style="
+          width: 80px;
+          height: 80px;
+          border-radius: 16px;
+          object-fit: cover;
+          margin: 0 auto 24px;
+          box-shadow: var(--shadow-md);
+        "
+      />
+      {% else %}
+      <div
+        style="
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+          border-radius: 16px;
+          margin: 0 auto 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <i
+          class="fas fa-project-diagram"
+          style="font-size: 36px; color: white"
+        ></i>
+      </div>
+      {% endif %}
 
-{% block title %}SSO Login - {{ project.name }}{% endblock %}
+      <h1 class="text-title-1" style="margin-bottom: 12px">
+        Sign In to {{ project.name }}
+      </h1>
 
-{% block content %}
-<div class="container mt-5">
-    <div class="card mx-auto shadow" style="max-width: 500px;">
-        <div class="card-header bg-white text-center py-4">
-            <div class="mb-3">
-                <img src="{{ project.logo.url|default:'https://via.placeholder.com/100' }}" 
-                     alt="{{ project.name }}" 
-                     class="rounded-circle"
-                     style="width: 100px; height: 100px; object-fit: cover;">
-            </div>
-            <h2 class="h4 mb-2">{{ project.name }}</h2>
-            {% if project.description %}
-                <p class="text-muted mb-0">{{ project.description }}</p>
-            {% endif %}
+      <p
+        class="text-body"
+        style="color: var(--color-gray); margin-bottom: 32px; line-height: 1.6"
+      >
+        You're being redirected to {{ project.name }}
+      </p>
+
+      <!-- User Info -->
+      <div
+        style="
+          padding: 20px;
+          background: var(--color-bg-secondary);
+          border-radius: 12px;
+          margin-bottom: 32px;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+          "
+        >
+          <div
+            style="
+              width: 40px;
+              height: 40px;
+              background: var(--color-system-blue);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <i class="fas fa-user" style="color: white; font-size: 16px"></i>
+          </div>
+          <div style="text-align: left">
+            <p
+              class="text-subhead"
+              style="font-weight: 600; margin: 0; color: var(--color-black)"
+            >
+              {{ user }}
+            </p>
+            <p
+              class="text-footnote"
+              style="color: var(--color-gray); margin: 0"
+            >
+              Authenticated
+            </p>
+          </div>
         </div>
+      </div>
 
-        {% if not project.is_verified %}
-        <div class="card-body border-bottom bg-light">
-            <div class="alert alert-warning mb-0">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
-                    <div>
-                        <strong>Unverified Project Warning</strong>
-                        <p class="mb-0">This project has not been verified by administrators. 
-                        Please proceed with caution. Limited to 10 active logins.</p>
-                    </div>
-                </div>
-            </div>
+      <a
+        href="{{ redirecturl }}"
+        class="btn btn-primary w-100"
+        style="font-size: 17px; padding: 14px 24px"
+      >
+        Continue to {{ project.name }}
+      </a>
+
+      <!-- Security Note -->
+      <div
+        style="
+          margin-top: 32px;
+          padding-top: 32px;
+          border-top: 0.5px solid var(--color-separator);
+        "
+      >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          "
+        >
+          <i
+            class="fas fa-shield-alt"
+            style="color: var(--color-system-green); font-size: 14px"
+          ></i>
+          <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+            Secured by ITC SSO
+          </p>
         </div>
-        {% endif %}
-
-        <div class="card-body p-4">
-            <h3 class="text-center h5 mb-4">Sign in as</h3>
-            
-            <div class="text-center mb-4">
-                <div class="avatar mb-3">
-                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" 
-                         style="width: 64px; height: 64px; font-size: 24px;">
-                        {{ user|make_list|first|upper }}
-                    </div>
-                </div>
-                <h4 class="h5 mb-1">{{ user }}</h4>
-                <p class="text-muted small mb-0">{{ user.email }}</p>
-            </div>
-
-            <div class="d-grid gap-3">
-                <a href="{{ redirecturl }}" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt me-2"></i>Continue as {{ user }}
-                </a>
-                <a href="{% url 'logout' %}?next={% url 'project_ssocall' project.id %}" 
-                   class="btn btn-outline-secondary">
-                    <i class="fas fa-user-switch me-2"></i>Use Different Account
-                </a>
-            </div>
-        </div>
-
-        {% if project.is_verified %}
-        <div class="card-footer bg-light text-center py-3">
-            <i class="fas fa-shield-check text-success me-2"></i>
-            <span class="text-muted">Verified by ITC administrators</span>
-        </div>
-        {% endif %}
+      </div>
     </div>
+  </div>
 </div>
 
-<style>
-.avatar {
-    display: flex;
-    justify-content: center;
-}
-.btn {
-    padding: 0.75rem 1.5rem;
-    font-weight: 500;
-}
-.btn-outline-secondary:hover {
-    background-color: #f8f9fa;
-}
-</style>
+<script>
+  // Auto-redirect after 3 seconds
+  setTimeout(function () {
+    window.location.href = "{{ redirecturl }}";
+  }, 3000);
+</script>
 {% endblock %}

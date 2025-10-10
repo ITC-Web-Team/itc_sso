@@ -1,36 +1,150 @@
-{% extends 'base.html' %}
-{% load widget_tweaks %}
+{% extends 'base.html' %} {% load widget_tweaks %} {% block title %} Create
+Account — ITC SSO {% endblock %} {% block content %}
+<div
+  class="container"
+  style="max-width: 540px; margin-top: 40px; margin-bottom: 60px"
+>
+  <div class="card">
+    <div class="card-body" style="padding: 40px">
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 32px">
+        <div
+          style="
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <i class="fas fa-user-plus" style="font-size: 28px; color: white"></i>
+        </div>
+        <h1 class="text-title-1" style="margin-bottom: 8px">Create Account</h1>
+        <p class="text-callout" style="color: var(--color-gray)">
+          Register for ITC SSO with your IITB credentials
+        </p>
+      </div>
 
-{% block title %}Register SSO{% endblock title %}
+      <!-- Form -->
+      <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %} {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">
+            {{ field.label }} {% if field.field.required %}
+            <span style="color: var(--color-system-red)">*</span>
+            {% endif %}
+          </label>
 
-{% block content %}
-<h2 class="text-center mb-4">Register for SSO</h2>
+          {% render_field field class="form-control" placeholder=field.label %}
+          {% if field.help_text %}
+          <div
+            style="
+              margin-top: 8px;
+              padding: 12px;
+              background: rgba(255, 149, 0, 0.1);
+              border-radius: 8px;
+            "
+          >
+            <small class="text-footnote" style="color: #cc7a00">
+              {{ field.help_text|safe }}
+            </small>
+          </div>
+          {% endif %} {% if field.errors %}
+          <div
+            style="
+              margin-top: 8px;
+              padding: 12px;
+              background: rgba(255, 59, 48, 0.1);
+              border-radius: 8px;
+            "
+          >
+            <small class="text-footnote" style="color: var(--color-system-red)">
+              <i
+                class="fas fa-exclamation-circle"
+                style="margin-right: 6px"
+              ></i>
+              {{ field.errors.0 }}
+            </small>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
 
-<form method="post" class="needs-validation" novalidate>
-  {% csrf_token %}
-  {% for field in form %}
-  <div class="mb-3">
-    <label for="{{ field.id_for_label }}" class="form-label">
-      {{ field.label }}
-      {% if field.field.required %}
-      <span class="text-danger">*</span>
-      {% endif %}
-    </label>
-    {% render_field field class="form-control" %}
-    {% if field.help_text %}
-    <small class="form-text text-muted">{{ field.help_text|safe }}</small>
-    {% endif %}
-    {% if field.errors %}
-    <div class="invalid-feedback d-block">{{ field.errors.0 }}</div>
-    {% endif %}
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          style="margin-top: 24px; font-size: 17px; padding: 14px 24px"
+        >
+          Create Account
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div style="display: flex; align-items: center; margin: 32px 0">
+        <div
+          style="flex: 1; height: 0.5px; background: var(--color-separator)"
+        ></div>
+        <span
+          style="
+            padding: 0 16px;
+            font-size: 13px;
+            color: var(--color-gray);
+            font-weight: 400;
+            letter-spacing: -0.1px;
+          "
+          >OR</span
+        >
+        <div
+          style="flex: 1; height: 0.5px; background: var(--color-separator)"
+        ></div>
+      </div>
+
+      <!-- Login Link -->
+      <div style="text-align: center">
+        <p
+          class="text-callout"
+          style="color: var(--color-gray); margin-bottom: 12px"
+        >
+          Already have an account?
+        </p>
+        <a href="{% url 'login' %}" class="btn btn-secondary w-100">
+          Sign In
+        </a>
+      </div>
+
+      <!-- Security Note -->
+      <div
+        style="
+          margin-top: 32px;
+          padding: 16px;
+          background: var(--color-bg-secondary);
+          border-radius: 8px;
+        "
+      >
+        <div style="display: flex; align-items: flex-start; gap: 12px">
+          <i
+            class="fas fa-info-circle"
+            style="
+              color: var(--color-system-blue);
+              font-size: 16px;
+              margin-top: 2px;
+            "
+          ></i>
+          <div>
+            <p
+              class="text-footnote"
+              style="color: var(--color-charcoal); margin: 0; line-height: 1.5"
+            >
+              Your account will be activated after email verification. Please
+              check your IITB email inbox.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  {% endfor %}
-  <div class="d-grid">
-    <button type="submit" class="btn btn-primary">Register</button>
-  </div>
-</form>
-
-<div class="text-center mt-3">
-  <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
 </div>
-{% endblock content %}
+{% endblock %}

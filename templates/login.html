@@ -1,42 +1,154 @@
-{% extends 'base.html' %} {% block title %}Login - SSO Application{% endblock %}
+{% extends 'base.html' %} 
+{% block title %} Sign In — ITC SSO {% endblock %} 
 {% block content %}
-<h2 class="text-center mb-4">Sign In SSO</h2>
-<form method="POST" action="{% url 'login' %}">
-  {% csrf_token %}
-  <input type="hidden" name="next" value="{{ next }}" />
-  <div class="mb-3">
-    <label for="rollNumber" class="form-label">Roll Number</label>
-    <input
-      type="text"
-      class="form-control"
-      id="rollNumber"
-      name="username"
-      required
-    />
-    <!-- Use 'username' here -->
-  </div>
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password"
-      name="password"
-      required
-    />
-  </div>
-  <button type="submit" class="btn btn-primary w-100">Sign In</button>
-  <div class="text-center mt-3">
-    <a href="{% url 'forgotpassword' %}">Forgot Password?</a>
-  </div>
-  <div class="text-center mt-3">
-    <a href="{% url 'register' %}">Register</a>
-  </div>
-</form>
+<div class="container" style="max-width: 480px; margin-top: 60px">
+  <div class="card">
+    <div class="card-body" style="padding: 40px">
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 32px">
+        <div
+          style="
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <i class="fas fa-key" style="font-size: 28px; color: white"></i>
+        </div>
+        <h1 class="text-title-1" style="margin-bottom: 8px">Sign In</h1>
+        <p class="text-callout" style="color: var(--color-gray)">
+          Sign in with your IITB credentials
+        </p>
+      </div>
 
-{% if messages %}
-<div class="alert alert-warning mt-3">
-  {% for message in messages %} {{ message }}<br />
-  {% endfor %}
+      <!-- Messages -->
+      {% if messages %}
+      <div style="margin-bottom: 24px">
+        {% for message in messages %}
+        <div
+          class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Form -->
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}" />
+
+        <div class="mb-3">
+          <label for="rollNumber" class="form-label">Roll Number</label>
+          <input
+            type="text"
+            class="form-control"
+            id="rollNumber"
+            name="username"
+            placeholder="Enter your roll number"
+            required
+            autofocus
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          style="margin-bottom: 16px"
+        >
+          Sign In
+        </button>
+
+        <div style="text-align: center">
+          <a
+            href="{% url 'forgotpassword' %}"
+            style="
+              color: var(--color-system-blue);
+              text-decoration: none;
+              font-size: 15px;
+              font-weight: 400;
+              letter-spacing: -0.2px;
+            "
+          >
+            Forgot Password?
+          </a>
+        </div>
+      </form>
+
+      <!-- Divider -->
+      <div style="display: flex; align-items: center; margin: 32px 0">
+        <div
+          style="flex: 1; height: 0.5px; background: var(--color-separator)"
+        ></div>
+        <span
+          style="
+            padding: 0 16px;
+            font-size: 13px;
+            color: var(--color-gray);
+            font-weight: 400;
+            letter-spacing: -0.1px;
+          "
+          >OR</span
+        >
+        <div
+          style="flex: 1; height: 0.5px; background: var(--color-separator)"
+        ></div>
+      </div>
+
+      <!-- Register Link -->
+      <div style="text-align: center">
+        <p
+          class="text-callout"
+          style="color: var(--color-gray); margin-bottom: 12px"
+        >
+          Don't have an account?
+        </p>
+        <a href="{% url 'register' %}" class="btn btn-secondary w-100">
+          Create Account
+        </a>
+      </div>
+
+      <!-- Security Note -->
+      <div
+        style="
+          margin-top: 32px;
+          padding: 16px;
+          background: var(--color-bg-secondary);
+          border-radius: 8px;
+          text-align: center;
+        "
+      >
+        <i
+          class="fas fa-shield-alt"
+          style="
+            color: var(--color-system-green);
+            font-size: 16px;
+            margin-bottom: 8px;
+          "
+        ></i>
+        <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+          Secured by ITC, IIT Bombay
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
-{% endif %} {% endblock %}
+{% endblock %}

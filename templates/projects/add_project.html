@@ -1,40 +1,89 @@
-{% extends 'base.html' %}
-{% load widget_tweaks %}
-
-{% block title %}Add Project - SSO Application{% endblock %}
-
-{% block content %}
-<div class="card">
-    <div class="card-body">
-        <h2 class="card-title mb-4">Add New Project</h2>
-        
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            Your project will need to be verified by an admin before it can be fully operational.
-            Unverified projects are limited to 10 active logins.
-        </div>
-
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% for field in form %}
-            <div class="mb-3">
-                <label for="{{ field.id_for_label }}" class="form-label">
-                    {{ field.label }}
-                    {% if field.field.required %}
-                    <span class="text-danger">*</span>
-                    {% endif %}
-                </label>
-                {% render_field field class="form-control" %}
-                {% if field.help_text %}
-                <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
-                {% if field.errors %}
-                <div class="invalid-feedback d-block">{{ field.errors.0 }}</div>
-                {% endif %}
-            </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">Add Project</button>
-        </form>
+{% extends 'base.html' %} {% load widget_tweaks %} {% block title %} Add Project
+— ITC SSO {% endblock %} {% block content %}
+<div
+  class="container"
+  style="max-width: 720px; margin-top: 40px; margin-bottom: 60px"
+>
+  <div class="card">
+    <div class="card-header">
+      <i class="fas fa-plus-circle" style="margin-right: 8px"></i>
+      Add New Project
     </div>
+    <div class="card-body" style="padding: 32px">
+      <!-- Info Alert -->
+      <div class="alert alert-info" style="margin-bottom: 24px">
+        <div style="display: flex; align-items: flex-start; gap: 12px">
+          <i
+            class="fas fa-info-circle"
+            style="font-size: 16px; margin-top: 2px"
+          ></i>
+          <div>
+            <p
+              class="text-callout"
+              style="margin: 0; line-height: 1.6; color: #0056cc"
+            >
+              Your project will need to be verified by an admin before it
+              appears in the SSO sidebar. Unverified projects are limited to 10
+              active logins.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %} {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">
+            {{ field.label }} {% if field.field.required %}
+            <span style="color: var(--color-system-red)">*</span>
+            {% endif %}
+          </label>
+
+          {% render_field field class="form-control" placeholder=field.label %}
+          {% if field.help_text %}
+          <small
+            class="text-footnote"
+            style="color: var(--color-gray); margin-top: 8px; display: block"
+          >
+            {{ field.help_text }}
+          </small>
+          {% endif %} {% if field.errors %}
+          <div
+            style="
+              margin-top: 8px;
+              padding: 12px;
+              background: rgba(255, 59, 48, 0.1);
+              border-radius: 8px;
+            "
+          >
+            <small class="text-footnote" style="color: var(--color-system-red)">
+              <i
+                class="fas fa-exclamation-circle"
+                style="margin-right: 6px"
+              ></i>
+              {{ field.errors.0 }}
+            </small>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        <div style="display: flex; gap: 12px; margin-top: 32px">
+          <button type="submit" class="btn btn-primary" style="flex: 1">
+            <i class="fas fa-plus" style="margin-right: 8px"></i>
+            Add Project
+          </button>
+          <a
+            href="{% url 'manage_projects' %}"
+            class="btn btn-secondary"
+            style="flex: 1"
+          >
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-{% endblock %} 
+{% endblock %}
