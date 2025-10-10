@@ -1,14 +1,72 @@
-{% extends 'base.html' %}
-
-{% block title %}Email Sent{% endblock %}
-
-{% block header %}Verification Email Sent{% endblock %}
-
+{% extends 'base.html' %} {% block title %} Email Sent — ITC SSO {% endblock %}
 {% block content %}
-<div class="text-center">
-    <p class="lead">A verification email has been sent to {{ email }}. Please check your inbox and follow the instructions to complete your registration.</p>
-    <div class="mt-4">
-        <a href="https://webmail.iitb.ac.in/" class="btn btn-primary">Check Webmail</a>
+<div
+  class="container"
+  style="max-width: 540px; margin-top: 80px; text-align: center"
+>
+  <div class="card">
+    <div class="card-body" style="padding: 60px 40px">
+      <!-- Success Icon -->
+      <div
+        style="
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+          border-radius: 50%;
+          margin: 0 auto 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <i
+          class="fas fa-envelope-open-text"
+          style="font-size: 36px; color: white"
+        ></i>
+      </div>
+
+      <h1 class="text-title-1" style="margin-bottom: 12px">Check Your Email</h1>
+
+      <p
+        class="text-body"
+        style="color: var(--color-gray); margin-bottom: 32px; line-height: 1.6"
+      >
+        We've sent a verification link to<br />
+        <strong style="color: var(--color-system-blue)">{{ email }}</strong>
+      </p>
+
+      <div
+        style="
+          padding: 24px;
+          background: var(--color-bg-secondary);
+          border-radius: 12px;
+          margin-bottom: 32px;
+        "
+      >
+        <p
+          class="text-callout"
+          style="color: var(--color-charcoal); margin: 0; line-height: 1.6"
+        >
+          Click the link in the email to verify your account and complete
+          registration.
+        </p>
+      </div>
+
+      <a href="{% url 'login' %}" class="btn btn-primary"> Go to Sign In </a>
+
+      <!-- Help Text -->
+      <div
+        style="
+          margin-top: 32px;
+          padding-top: 32px;
+          border-top: 0.5px solid var(--color-separator);
+        "
+      >
+        <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+          Didn't receive the email? Check your spam folder or contact support.
+        </p>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

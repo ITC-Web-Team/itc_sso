@@ -1,20 +1,5 @@
-body {
-  background-color: #f8f9fa;
-}
+/* Apple-Inspired Design System for ITC SSO */
+/* All main styles are defined in base.html for better maintainability */
+/* This file is kept for any future custom additions */
 
-.navbar {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.card {
-  border-radius: 0.5rem;
-}
-
-footer {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-}
+/* Additional utility classes can be added here if needed */

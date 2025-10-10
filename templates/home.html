@@ -1,152 +1,300 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
+{% block title %} Home — ITC SSO {% endblock %} 
+{%block content %}
+<div class="welcome-section">
+  {% if user.is_authenticated %}
+  <!-- User Welcome Card -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-body" style="padding: 32px">
+      <div style="display: flex; align-items: center; gap: 20px">
+        <div
+          style="
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <span style="color: white; font-size: 24px; font-weight: 700">
+            {{ user.username|make_list|first|upper }}
+          </span>
+        </div>
+        <div style="flex: 1">
+          <h2 class="text-title-2" style="margin-bottom: 4px">
+            Welcome back, {{ user.profile.name }}
+          </h2>
+          <p class="text-callout" style="color: var(--color-gray); margin: 0">
+            {{ user.profile.roll }} • {{ user.profile.department }}
+          </p>
+        </div>
+        <a href="{% url 'logout' %}" class="btn btn-secondary">
+          <i class="fas fa-sign-out-alt" style="margin-right: 8px"></i>
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
 
-{% block title %}Home - ITC SSO{% endblock %}
-
-{% block content %}
-<div class="welcome-section text-center mb-5">
-    {% if user.is_authenticated %}
-        <div class="user-welcome p-4 rounded-3 bg-light mb-4">
-            <div class="d-flex align-items-center justify-content-center mb-3">
-                <div class="avatar-circle me-3">
-                    <span class="initials">{{ user.username|make_list|first|upper }}</span>
+  {% if sso_sessions %}
+  <!-- Recent Sessions -->
+  <div class="card">
+    <div class="card-header">
+      <i
+        class="fas fa-history"
+        style="margin-right: 12px; color: var(--color-system-blue)"
+      ></i>
+      Recent Sessions
+    </div>
+    <div class="card-body" style="padding: 0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>
+                <i class="fas fa-desktop" style="margin-right: 8px"></i>
+                Device
+              </th>
+              <th>
+                <i class="fas fa-circle" style="margin-right: 8px"></i>
+                Status
+              </th>
+              <th>
+                <i class="fas fa-clock" style="margin-right: 8px"></i>
+                Created
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for session in sso_sessions %}
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 12px">
+                  <i
+                    class="fas {% if 'Mobile' in session.device %}fa-mobile-alt{% else %}fa-laptop{% endif %}"
+                    style="color: var(--color-system-blue); font-size: 16px"
+                  ></i>
+                  <span title="{{ session.device }}">
+                    {{ session.device|truncatechars:50 }}
+                  </span>
                 </div>
-                <h2 class="h3 mb-0">Welcome, {{ user.username }}!</h2>
-            </div>
-        </div>
-
-        {% if sso_sessions %}
-        <div class="card">
-            <div class="card-header bg-transparent border-0">
-                <h3 class="h5 mb-0">
-                    <i class="fas fa-history me-2"></i>Recent Sessions
-                </h3>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>
-                                    <i class="fas fa-desktop me-2"></i>Device
-                                </th>
-                                <th>
-                                    <i class="fas fa-circle me-2"></i>Status
-                                </th>
-                                <th>
-                                    <i class="fas fa-clock me-2"></i>Created
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for session in sso_sessions %}
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas {% if 'Mobile' in session.device %}fa-mobile-alt{% else %}fa-laptop{% endif %} me-2"></i>
-                                        <span title="{{ session.device }}">{{ session.device|truncatechars:40 }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    {% if session.active %}
-                                        <span class="badge bg-success rounded-pill">
-                                            <i class="fas fa-check me-1"></i>Active
-                                        </span>
-                                    {% else %}
-                                        <span class="badge bg-danger rounded-pill">
-                                            <i class="fas fa-times me-1"></i>Expired
-                                        </span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span title="{{ session.created_at|date:'d M Y H:i:s' }}">
-                                        <i class="far fa-clock me-1"></i>
-                                        {{ session.created_at|timesince }} ago
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <a href="{% url 'logout' %}" class="btn btn-primary">
-                <i class="fas fa-sign-out-alt me-2"></i>Logout
-            </a>
-        </div>
-        {% else %}
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            You have no active or previous SSO sessions.
-        </div>
-        {% endif %}
-
-    {% else %}
-        <div class="auth-section mt-5">
-            <div class="card">
-                <div class="card-body p-5">
-                    <div class="mb-4">
-                        <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
-                        <p class="lead">Please login or register to access<br>
-                            <span class="text-primary">(IITB students only)</span>
-                        </p>
-                    </div>
-                    <div class="d-grid gap-3">
-                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                        </a>
-                        <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Register
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-</div>
-
-<style>
-    .main-container {
-        display: flex;
-        min-height: 100%;
-    }
-    .avatar-circle {
-        width: 50px;
-        height: 50px;
-        background-color: var(--primary-color);
-        border-radius: 50%;
+              </td>
+              <td>
+                {% if session.active %}
+                <span class="badge bg-success">
+                  <i class="fas fa-check"></i>
+                  Active
+                </span>
+                {% else %}
+                <span class="badge bg-danger">
+                  <i class="fas fa-times"></i>
+                  Expired
+                </span>
+                {% endif %}
+              </td>
+              <td>
+                <span
+                  title="{{ session.created_at|date:'d M Y H:i:s' }}"
+                  style="color: var(--color-gray)"
+                >
+                  {{ session.created_at|timesince }} ago
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <!-- No Sessions -->
+  <div class="card">
+    <div class="card-body" style="padding: 60px 32px; text-align: center">
+      <div
+        style="
+          width: 80px;
+          height: 80px;
+          background: var(--color-bg-secondary);
+          border-radius: 50%;
+          margin: 0 auto 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <i
+          class="fas fa-clock"
+          style="font-size: 32px; color: var(--color-gray)"
+        ></i>
+      </div>
+      <h3 class="text-title-3" style="margin-bottom: 8px">
+        No Recent Activity
+      </h3>
+      <p class="text-callout" style="color: var(--color-gray); margin: 0">
+        You have no active or previous SSO sessions
+      </p>
+    </div>
+  </div>
+  {% endif %} {% else %}
+  <!-- Not Authenticated -->
+  <div style="max-width: 560px; margin: 80px auto; text-align: center">
+    <div
+      style="
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+        border-radius: 24px;
+        margin: 0 auto 32px;
         display: flex;
         align-items: center;
         justify-content: center;
-    }
+      "
+    >
+      <i class="fas fa-key" style="font-size: 48px; color: white"></i>
+    </div>
 
-    .initials {
-        color: white;
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
+    <h1 class="text-large-title" style="margin-bottom: 16px">
+      One Login for All Your Apps
+    </h1>
 
-    .table th {
-        font-weight: 600;
-        color: var(--text-secondary);
-    }
+    <p
+      class="text-body"
+      style="
+        color: var(--color-gray);
+        margin-bottom: 40px;
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    >
+      Sign in once to access all ITC services with secure single sign-on
+      authentication
+    </p>
 
-    .badge {
-        font-weight: 500;
-        padding: 0.5em 0.75em;
-    }
+    <div class="card" style="max-width: 400px; margin: 0 auto">
+      <div class="card-body" style="padding: 32px">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <a
+            href="{% url 'login' %}"
+            class="btn btn-primary"
+            style="font-size: 17px; padding: 14px 24px"
+          >
+            <i class="fas fa-sign-in-alt" style="margin-right: 8px"></i>
+            Sign In
+          </a>
+          <a
+            href="{% url 'register' %}"
+            class="btn btn-secondary"
+            style="font-size: 17px; padding: 14px 24px"
+          >
+            <i class="fas fa-user-plus" style="margin-right: 8px"></i>
+            Create Account
+          </a>
+        </div>
 
-    .auth-section .card {
-        max-width: 400px;
-        margin: 0 auto;
-    }
+        <div
+          style="
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 0.5px solid var(--color-separator);
+          "
+        >
+          <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+            <i
+              class="fas fa-graduation-cap"
+              style="margin-right: 6px; color: var(--color-system-blue)"
+            ></i>
+            For IITB students only
+          </p>
+        </div>
+      </div>
+    </div>
 
-    .btn-lg {
-        padding: 1rem 2rem;
-    }
-</style>
+    <!-- Features -->
+    <div
+      style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 60px;
+      "
+    >
+      <div style="text-align: center; padding: 24px">
+        <div
+          style="
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 122, 255, 0.1);
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <i
+            class="fas fa-shield-alt"
+            style="font-size: 20px; color: var(--color-system-blue)"
+          ></i>
+        </div>
+        <h4 class="text-headline" style="margin-bottom: 8px">Secure</h4>
+        <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+          End-to-end encrypted authentication
+        </p>
+      </div>
+
+      <div style="text-align: center; padding: 24px">
+        <div
+          style="
+            width: 48px;
+            height: 48px;
+            background: rgba(52, 199, 89, 0.1);
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <i
+            class="fas fa-bolt"
+            style="font-size: 20px; color: var(--color-system-green)"
+          ></i>
+        </div>
+        <h4 class="text-headline" style="margin-bottom: 8px">Fast</h4>
+        <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+          Instant access to all services
+        </p>
+      </div>
+
+      <div style="text-align: center; padding: 24px">
+        <div
+          style="
+            width: 48px;
+            height: 48px;
+            background: rgba(175, 82, 222, 0.1);
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <i
+            class="fas fa-sync-alt"
+            style="font-size: 20px; color: var(--color-system-purple)"
+          ></i>
+        </div>
+        <h4 class="text-headline" style="margin-bottom: 8px">Seamless</h4>
+        <p class="text-footnote" style="color: var(--color-gray); margin: 0">
+          One login for multiple apps
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
 {% endblock %}
-
-

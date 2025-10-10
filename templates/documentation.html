@@ -1,99 +1,347 @@
-{% extends 'base.html' %} {% load static %} {% block title %}Developer
-Documentation{% endblock %} {% block content %}
-<div class="container">
-  <div class="card">
-    <div class="header-section">
-      <h1>SSO Integration Documentation</h1>
-      <a href="https://github.com/ITC-Web-Team/itc_sso" class="github-link" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-github"></i> View on GitHub
-      </a>
+{% extends 'base.html' %} {% load static %} {% block title %} Documentation —
+ITC SSO {% endblock %} {% block content %}
+<div class="container" style="max-width: 900px">
+  <!-- Header -->
+  <div style="text-align: center; margin-bottom: 48px">
+    <div
+      style="
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+        border-radius: 20px;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <i class="fas fa-book" style="font-size: 36px; color: white"></i>
     </div>
+    <h1 class="text-large-title" style="margin-bottom: 12px">
+      Developer Documentation
+    </h1>
+    <p
+      class="text-body"
+      style="color: var(--color-gray); max-width: 600px; margin: 0 auto 24px"
+    >
+      Learn how to integrate ITC SSO into your applications
+    </p>
+    <a
+      href="https://github.com/ITC-Web-Team/itc_sso"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn btn-secondary"
+    >
+      <i class="fab fa-github" style="margin-right: 8px"></i>
+      View on GitHub
+    </a>
+  </div>
 
-    <div class="card-body p-5">
-      <section class="mb-5">
-        <h2 class="h4 mb-3">1. Overview</h2>
-        <p>
-          The ITC SSO service provides a secure, centralized authentication system for IITB projects. 
-          It enables users to log in once and access multiple applications without re-entering credentials.
+  <!-- Overview -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-info-circle" style="margin-right: 8px"></i>
+      1. Overview
+    </div>
+    <div class="card-body">
+      <p
+        class="text-body"
+        style="
+          color: var(--color-charcoal);
+          line-height: 1.6;
+          margin-bottom: 24px;
+        "
+      >
+        The ITC SSO service provides a secure, centralized authentication system
+        for IITB projects. It enables users to log in once and access multiple
+        applications without re-entering credentials.
+      </p>
+
+      <div
+        style="
+          background: var(--color-bg-secondary);
+          border-radius: 12px;
+          padding: 20px;
+          text-align: center;
+        "
+      >
+        <img
+          src="https://files.tech-iitb.org/itcssostatic/sso-flow.png"
+          alt="SSO Flow Diagram"
+          style="
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 0.5px solid var(--color-separator);
+          "
+        />
+        <p
+          class="text-footnote"
+          style="color: var(--color-gray); margin-top: 12px; margin-bottom: 0"
+        >
+          SSO Authentication and Data Flow Diagram
         </p>
-        
-        <div class="flow-diagram">
-          <img src="https://files.tech-iitb.org/itcssostatic/sso-flow.png" alt="SSO Flow Diagram" class="img-fluid">
-          <div class="diagram-caption">
-            SSO Authentication and Data Flow Diagram
-          </div>
-        </div>
-      </section>
+      </div>
+    </div>
+  </div>
 
-      <section class="mb-5">
-        <h2 class="h4 mb-3">2. Authentication Flow</h2>
-        <div class="card bg-light mb-3">
-          <div class="card-body">
-            <ol>
-              <li>
-                <strong>Initial SSO Request:</strong>
-                <ul>
-                  <li>Client redirects to: <code>sso.tech-iitb.org/project/&lt;project_id&gt;/ssocall/</code></li>
-                  <li>User is taken to the SSO login page if not already authenticated</li>
+  <!-- Authentication Flow -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-route" style="margin-right: 8px"></i>
+      2. Authentication Flow
+    </div>
+    <div class="card-body">
+      <div
+        style="
+          background: var(--color-bg-secondary);
+          border-radius: 12px;
+          padding: 24px;
+        "
+      >
+        <ol
+          style="
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            counter-reset: step-counter;
+          "
+        >
+          <li
+            style="
+              counter-increment: step-counter;
+              margin-bottom: 20px;
+              padding-left: 0;
+            "
+          >
+            <div style="display: flex; gap: 16px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--color-system-blue);
+                  color: white;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  font-size: 15px;
+                  flex-shrink: 0;
+                "
+              >
+                1
+              </div>
+              <div>
+                <h4 class="text-headline" style="margin-bottom: 8px">
+                  Initial SSO Request
+                </h4>
+                <ul style="list-style: none; padding: 0; margin: 0">
+                  <li
+                    class="text-callout"
+                    style="color: var(--color-charcoal); margin-bottom: 6px"
+                  >
+                    • Client redirects to:
+                    <code
+                      style="
+                        background: rgba(0, 0, 0, 0.05);
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                        font-size: 14px;
+                      "
+                      >sso.tech-iitb.org/project/&lt;project_id&gt;/ssocall/</code
+                    >
+                  </li>
+                  <li class="text-callout" style="color: var(--color-charcoal)">
+                    • User is taken to the SSO login page if not already
+                    authenticated
+                  </li>
                 </ul>
-              </li>
-              <li>
-                <strong>Authentication Response:</strong>
-                <ul>
-                  <li>After successful login, user is redirected to: <code>&lt;client_redirect_url&gt;?accessid=&lt;session_key&gt;</code></li>
-                  <li>The session key is unique for each authentication session</li>
-                </ul>
-              </li>
-              <li>
-                <strong>User Data Retrieval:</strong>
-                <ul>
-                  <li>Client makes POST request to: <code>https://sso.tech-iitb.org/project/getuserdata</code></li>
-                  <li>Request body must include the session key</li>
-                </ul>
-              </li>
-              <li>
-                <strong>Data Response:</strong>
-                <ul>
-                  <li>SSO returns user profile data in JSON format</li>
-                  <li>Includes: name, roll number, department, degree, and passing year</li>
-                </ul>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </section>
+              </div>
+            </div>
+          </li>
 
-      <section class="mb-5">
-        <h2 class="h4 mb-3">3. Integration Steps</h2>
-        <div class="card bg-light mb-3">
-          <div class="card-body">
-            <ol>
-              <li>Register your project in the SSO dashboard</li>
-              <li>Configure your redirect URL</li>
-              <li>Implement the authentication flow</li>
-              <li>Handle the user data response</li>
-            </ol>
-          </div>
-        </div>
-      </section>
+          <li
+            style="
+              counter-increment: step-counter;
+              margin-bottom: 20px;
+              padding-left: 0;
+            "
+          >
+            <div style="display: flex; gap: 16px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--color-system-blue);
+                  color: white;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  font-size: 15px;
+                  flex-shrink: 0;
+                "
+              >
+                2
+              </div>
+              <div>
+                <h4 class="text-headline" style="margin-bottom: 8px">
+                  Authentication Response
+                </h4>
+                <ul style="list-style: none; padding: 0; margin: 0">
+                  <li
+                    class="text-callout"
+                    style="color: var(--color-charcoal); margin-bottom: 6px"
+                  >
+                    • After successful login, user is redirected to:
+                    <code
+                      style="
+                        background: rgba(0, 0, 0, 0.05);
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                        font-size: 14px;
+                      "
+                      >&lt;client_redirect_url&gt;?accessid=&lt;session_key&gt;</code
+                    >
+                  </li>
+                  <li class="text-callout" style="color: var(--color-charcoal)">
+                    • The session key is unique for each authentication session
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
 
-      <section class="mb-5">
-        <h2 class="h4 mb-3">4. Code Examples</h2>
+          <li
+            style="
+              counter-increment: step-counter;
+              margin-bottom: 20px;
+              padding-left: 0;
+            "
+          >
+            <div style="display: flex; gap: 16px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--color-system-blue);
+                  color: white;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  font-size: 15px;
+                  flex-shrink: 0;
+                "
+              >
+                3
+              </div>
+              <div>
+                <h4 class="text-headline" style="margin-bottom: 8px">
+                  User Data Retrieval
+                </h4>
+                <ul style="list-style: none; padding: 0; margin: 0">
+                  <li
+                    class="text-callout"
+                    style="color: var(--color-charcoal); margin-bottom: 6px"
+                  >
+                    • Client makes POST request to:
+                    <code
+                      style="
+                        background: rgba(0, 0, 0, 0.05);
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                        font-size: 14px;
+                      "
+                      >https://sso.tech-iitb.org/project/getuserdata</code
+                    >
+                  </li>
+                  <li class="text-callout" style="color: var(--color-charcoal)">
+                    • Request body must include the session key
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
 
-        <div class="card mb-3">
-          <div class="card-header">Python Example</div>
-          <div class="card-body">
-            <pre><code class="python">
-import requests
+          <li style="counter-increment: step-counter; padding-left: 0">
+            <div style="display: flex; gap: 16px">
+              <div
+                style="
+                  width: 32px;
+                  height: 32px;
+                  background: var(--color-system-blue);
+                  color: white;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-weight: 700;
+                  font-size: 15px;
+                  flex-shrink: 0;
+                "
+              >
+                4
+              </div>
+              <div>
+                <h4 class="text-headline" style="margin-bottom: 8px">
+                  Data Response
+                </h4>
+                <ul style="list-style: none; padding: 0; margin: 0">
+                  <li
+                    class="text-callout"
+                    style="color: var(--color-charcoal); margin-bottom: 6px"
+                  >
+                    • SSO returns user profile data in JSON format
+                  </li>
+                  <li class="text-callout" style="color: var(--color-charcoal)">
+                    • Includes: name, roll number, department, degree, and
+                    passing year
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Examples -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-code" style="margin-right: 8px"></i>
+      3. Code Examples
+    </div>
+    <div class="card-body">
+      <!-- Python Example -->
+      <div style="margin-bottom: 24px">
+        <h4
+          class="text-headline"
+          style="margin-bottom: 12px; color: var(--color-charcoal)"
+        >
+          Python
+        </h4>
+        <pre
+          style="
+            background: var(--color-charcoal);
+            color: #e5e5ea;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+          "
+        ><code>import requests
 
 # Step 1: Redirect user to SSO
 sso_url = f'https://sso.tech-iitb.org/project/{project_id}/ssocall/'
-# Redirect user to sso_url
 
 # Step 2: Handle the redirect with session key
-# Your redirect endpoint will receive: ?accessid=<session_key>
-
-# Step 3: Retrieve user data
 def get_user_data(session_key):
     response = requests.post(
         'https://sso.tech-iitb.org/project/getuserdata',
@@ -108,138 +356,215 @@ def get_user_data(session_key):
 #     "department": "Computer Science",
 #     "degree": "BTech",
 #     "passing_year": "2024"
-# }
-            </code></pre>
-          </div>
-        </div>
+# }</code></pre>
+      </div>
 
-        <div class="card">
-          <div class="card-header">JavaScript Example</div>
-          <div class="card-body">
-            <pre><code class="javascript">
-// Step 1: Redirect to SSO
+      <!-- JavaScript Example -->
+      <div>
+        <h4
+          class="text-headline"
+          style="margin-bottom: 12px; color: var(--color-charcoal)"
+        >
+          JavaScript
+        </h4>
+        <pre
+          style="
+            background: var(--color-charcoal);
+            color: #e5e5ea;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+          "
+        ><code>// Step 1: Redirect to SSO
 function redirectToSSO(projectId) {
-    window.location.href = `https://sso.tech-iitb.org/project/${projectId}/ssocall/`;
+    window.location.href = 
+        `https://sso.tech-iitb.org/project/${projectId}/ssocall/`;
 }
 
-// Step 2: Handle the redirect and get user data
-async function handleSSORedirect() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionKey = urlParams.get('accessid');
-    
-    if (sessionKey) {
-        const userData = await getUserData(sessionKey);
-        console.log('User Data:', userData);
-    }
-}
-
-// Step 3: Fetch user data
+// Step 2: Get user data
 async function getUserData(sessionKey) {
-    const response = await fetch('https://sso.tech-iitb.org/project/getuserdata', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: sessionKey })
-    });
+    const response = await fetch(
+        'https://sso.tech-iitb.org/project/getuserdata',
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: sessionKey })
+        }
+    );
     return response.json();
-}
-            </code></pre>
-          </div>
-        </div>
-      </section>
+}</code></pre>
+      </div>
+    </div>
+  </div>
 
-      <section class="mb-5">
-        <h2 class="h4 mb-3">5. Error Handling</h2>
-        <div class="card bg-light">
-          <div class="card-body">
-            <h3 class="h5">Common Error Responses</h3>
-            <ul>
-              <li><strong>400 Bad Request:</strong> Missing or invalid session key</li>
-              <li><strong>401 Unauthorized:</strong> Invalid or expired session</li>
-              <li><strong>403 Forbidden:</strong> Project not authorized</li>
-              <li><strong>404 Not Found:</strong> Invalid endpoint or project ID</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="mb-5">
-        <h2 class="h4 mb-3">6. File Storage</h2>
-        <div class="card bg-light">
-          <div class="card-body">
-            <p>
-              All media files (including profile pictures) are stored securely using MinIO object storage.
-              Files are organized in buckets:
+  <!-- Error Handling -->
+  <div class="card" style="margin-bottom: 24px">
+    <div class="card-header">
+      <i class="fas fa-exclamation-triangle" style="margin-right: 8px"></i>
+      4. Error Handling
+    </div>
+    <div class="card-body">
+      <div style="display: grid; gap: 12px">
+        <div
+          style="
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <span class="badge bg-danger" style="height: fit-content">400</span>
+          <div>
+            <h5
+              class="text-subhead"
+              style="font-weight: 600; margin-bottom: 4px"
+            >
+              Bad Request
+            </h5>
+            <p class="text-callout" style="color: var(--color-gray); margin: 0">
+              Missing or invalid session key
             </p>
-            <ul>
-              <li><strong>Media Files:</strong> Stored in the media bucket with appropriate access controls</li>
-              <li><strong>Static Files:</strong> Served from a dedicated static bucket</li>
-            </ul>
           </div>
         </div>
-      </section>
+        <div
+          style="
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <span class="badge bg-danger" style="height: fit-content">401</span>
+          <div>
+            <h5
+              class="text-subhead"
+              style="font-weight: 600; margin-bottom: 4px"
+            >
+              Unauthorized
+            </h5>
+            <p class="text-callout" style="color: var(--color-gray); margin: 0">
+              Invalid or expired session
+            </p>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <span class="badge bg-danger" style="height: fit-content">403</span>
+          <div>
+            <h5
+              class="text-subhead"
+              style="font-weight: 600; margin-bottom: 4px"
+            >
+              Forbidden
+            </h5>
+            <p class="text-callout" style="color: var(--color-gray); margin: 0">
+              Project not authorized
+            </p>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <span class="badge bg-danger" style="height: fit-content">404</span>
+          <div>
+            <h5
+              class="text-subhead"
+              style="font-weight: 600; margin-bottom: 4px"
+            >
+              Not Found
+            </h5>
+            <p class="text-callout" style="color: var(--color-gray); margin: 0">
+              Invalid endpoint or project ID
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- File Storage -->
+  <div class="card" style="margin-bottom: 40px">
+    <div class="card-header">
+      <i class="fas fa-database" style="margin-right: 8px"></i>
+      5. File Storage
+    </div>
+    <div class="card-body">
+      <p
+        class="text-body"
+        style="
+          color: var(--color-charcoal);
+          line-height: 1.6;
+          margin-bottom: 16px;
+        "
+      >
+        All media files are stored securely using MinIO object storage:
+      </p>
+      <ul style="list-style: none; padding: 0; margin: 0">
+        <li
+          style="
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+          "
+        >
+          <i
+            class="fas fa-folder"
+            style="color: var(--color-system-blue); margin-top: 2px"
+          ></i>
+          <div>
+            <strong class="text-subhead" style="font-weight: 600"
+              >Media Files:</strong
+            >
+            <span class="text-callout" style="color: var(--color-charcoal)">
+              Stored in the media bucket with appropriate access controls</span
+            >
+          </div>
+        </li>
+        <li
+          style="
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--color-bg-secondary);
+            border-radius: 8px;
+          "
+        >
+          <i
+            class="fas fa-folder"
+            style="color: var(--color-system-blue); margin-top: 2px"
+          ></i>
+          <div>
+            <strong class="text-subhead" style="font-weight: 600"
+              >Static Files:</strong
+            >
+            <span class="text-callout" style="color: var(--color-charcoal)">
+              Served from a dedicated static bucket</span
+            >
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
-
-<style>
-  pre {
-    background-color: #f4f4f4;
-    border-radius: 5px;
-    padding: 15px;
-    overflow-x: auto;
-  }
-  code {
-    font-size: 0.9rem;
-  }
-  .header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #e1e4e8;
-  }
-  .github-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #24292e;
-    color: white;
-    text-decoration: none;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-  }
-  .github-link:hover {
-    background-color: #2f363d;
-    color: white;
-    text-decoration: none;
-  }
-  .flow-diagram {
-    margin: 2rem 0;
-    text-align: center;
-  }
-  .flow-diagram img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border: 1px solid #e1e4e8;
-  }
-  .diagram-caption {
-    margin-top: 1rem;
-    color: #666;
-    font-size: 0.9rem;
-  }
-</style>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll("pre code").forEach((block) => {
-      hljs.highlightBlock(block);
-    });
-  });
-</script>
 {% endblock %}
