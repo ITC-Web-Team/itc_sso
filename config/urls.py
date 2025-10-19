@@ -20,7 +20,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from accounts.sitemaps import StaticViewSitemap, ProjectSitemap
 
 # Sitemap configuration
@@ -38,4 +38,7 @@ urlpatterns = [
     
     # SEO - Robots.txt
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots_txt'),
+    
+    # Favicon - Browser default location
+    path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'img/logo.png', permanent=True), name='favicon'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
