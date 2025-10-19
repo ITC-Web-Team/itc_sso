@@ -1,0 +1,22 @@
+{
+  "name": "ITC SSO",
+  "short_name": "ITC SSO",
+  "description": "Secure Single Sign-On for IIT Bombay",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007aff",
+  "icons": [
+    {
+      "src": "/static/img/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/img/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+

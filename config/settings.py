@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',  # For SEO sitemap
+    'django.contrib.sites',  # Required for sitemap
     'accounts',
     'corsheaders',
     'widget_tweaks',
@@ -39,6 +41,9 @@ INSTALLED_APPS = [
     'gunicorn',
     'minio_storage',
 ]
+
+# Site ID for django.contrib.sites
+SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -185,3 +190,26 @@ MINIO_STORAGE_MEDIA_OBJECT_METADATA = {"Cache-Control": "max-age=1000"}
 # Static files configuration
 MINIO_STORAGE_STATIC_BUCKET_NAME = env('MINIO_STORAGE_STATIC_BUCKET_NAME')
 MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+
+# ============================================================================
+# SEO OPTIMIZATION SETTINGS
+# ============================================================================
+
+# Security headers for SEO and best practices
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# HTTPS settings (enable in production)
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Prepend www to URLs (optional - set to False if not using www)
+PREPEND_WWW = False
+
+# Append slash to URLs
+APPEND_SLASH = True
