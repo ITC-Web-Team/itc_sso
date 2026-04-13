@@ -33,18 +33,19 @@ My Projects — ITC SSO
       <div class="card-body" style="padding: 24px">
         <div style="display: flex; align-items: center; gap: 20px">
           <!-- Project Logo -->
-          <img
-            src="{{ project.logo.url|default:'https://via.placeholder.com/60' }}"
-            alt="{{ project.name }}"
-            style="
-              width: 60px;
-              height: 60px;
-              object-fit: cover;
-              border-radius: 12px;
-              flex-shrink: 0;
-            "
-          />
-
+        {% if project.logo %}
+  <img
+    src="{{ project.logo.url }}"
+    alt="{{ project.name }}"
+    style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;"
+  />
+{% else %}
+  <img
+    src="https://picsum.photos/id/29/60"
+    alt="No logo"
+    style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;"
+  />
+{% endif %}
           <!-- Project Info -->
           <div style="flex: 1; min-width: 0">
             <h3 class="text-title-3" style="margin-bottom: 6px">
