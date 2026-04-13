@@ -30,16 +30,16 @@
       "
     >
       <img
-        src="{{ project.logo.url|default:'https://picsum.photos/id/29/60' }}"
-        alt="{{ project.name }}"
-        style="
-          width: 80px;
-          height: 80px;
-          object-fit: cover;
-          border-radius: 16px;
-          flex-shrink: 0;
-        "
-      />
+    src="{{ project.logo.url }}"
+    alt="{{ project.name }}"
+    style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;"
+  />
+{% else %}
+  <img
+    src="https://picsum.photos/id/29/60"
+    alt="No logo"
+    style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;"
+  />
       <div style="min-width: 0">
         <h1 class="text-title-1" style="margin-bottom: 8px">
           {{ project.name }}
