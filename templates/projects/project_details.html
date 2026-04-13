@@ -29,7 +29,8 @@
         min-width: 0;
       "
     >
-      <img
+      {% if project.logo %}
+  <img
     src="{{ project.logo.url }}"
     alt="{{ project.name }}"
     style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;"
@@ -40,6 +41,7 @@
     alt="No logo"
     style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; flex-shrink: 0;"
   />
+  {% endif %}
       <div style="min-width: 0">
         <h1 class="text-title-1" style="margin-bottom: 8px">
           {{ project.name }}
