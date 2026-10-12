@@ -115,7 +115,14 @@ class EmailSender:
 # Convenience function for easy email sending
 def send_email(subject, message, recipient_list, html_message=None):
     """
-    Convenience wrapper for EmailSender
+    Queue an email on a background thread so a slow or hanging SMTP server
+    never blocks a web worker. Returns True once queued.
     """
-    email_sender = EmailSender()
-    return email_sender.send_email(subject, message, recipient_list, html_message) 
+    def _send():
+        try:
+            EmailSender().send_email(subject, message, recipient_list, html_message)
+        except Exception as e:
+            logger.error(f"Background email send failed: {e}")
+
+    threading.Thread(target=_send, daemon=True).start()
+    return True
