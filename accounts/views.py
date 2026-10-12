@@ -9,6 +9,8 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 import logging
+from django.db import transaction
+from django.db.models import F
 from django.contrib.auth.models import User
 
 # Initialize logger
@@ -352,19 +354,22 @@ def project_ssocall(request, id):
         project.active_logins = active_count
         project.save()
 
-    # Check if there's an existing valid session
-    if LoginSession.objects.filter(sessionkey=newid).exists():
-        session = LoginSession.objects.get(sessionkey=newid)
-        if session.is_session_valid():
-            return redirect(f'{project_url}?accessid={session.sessionkey}')
-        else:
-            # Session has expired, it's already been deactivated by is_session_valid
-            session.delete()  # We can delete it now as we'll create a new one
+    # Reuse an existing valid session; create one atomically otherwise.
+    # get_or_create + atomic avoids IntegrityError on the unique sessionkey
+    # when the same user hits this endpoint concurrently.
+    with transaction.atomic():
+        session, created = LoginSession.objects.get_or_create(
+            sessionkey=newid, defaults={'user': user, 'project': project}
+        )
+        if not created and not session.is_session_valid():
+            session.delete()
+            session = LoginSession.objects.create(sessionkey=newid, user=user, project=project)
+            created = True
+        if created:
+            Project.objects.filter(pk=project.pk).update(active_logins=F('active_logins') + 1)
 
-    # Create a new session and increment the counter
-    session = LoginSession.objects.create(sessionkey=newid, user=user, project=project)
-    project.active_logins += 1
-    project.save()
+    if not created:
+        return redirect(f'{project_url}?accessid={session.sessionkey}')
 
     return render(request, 'ssologin.html', {
         'project': project, 
