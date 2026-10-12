@@ -21,9 +21,8 @@ CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', default=True)
 CORS_ORIGIN_ALLOW = env.list('CORS_ORIGIN_ALLOW', default=[])
 
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
-CSRF_TRUSTED_ORIGINS_ALL = True
-CSRF_COOKIE_SECURE = True  
-CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -86,6 +85,7 @@ DATABASES = {
         'PASSWORD': env('DB_PASSWORD'),
         'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT'),
+        'CONN_MAX_AGE': 60,
     }
 }
 
