@@ -122,6 +122,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Dynamically load email configurations from environment variables
+EMAIL_TIMEOUT = 10  # never let a hung SMTP connection hold a worker
+
 EMAIL_CONFIGS = []
 EMAIL_CONFIG_COUNT = int(env('EMAIL_CONFIG_COUNT', default=1))
 
